@@ -1,0 +1,77 @@
+﻿@model AccuFintech.Models.FranchaiseModel
+
+
+@using (Html.BeginForm("Index", "Franchaise"))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.FranchaiseId, htmlAttributes: new { @id = "txtBrId", @Value = 1 })
+
+        <div class="row">
+            <div class="col-md-6 col-lg-6 col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FranchaiseCode, htmlAttributes: new { @class = "col-form-label" })
+                    <div class="form-row" style="margin:0px 0px;">
+                        @Html.EditorFor(model => model.FranchaiseCode, new { htmlAttributes = new { @class = "form-control col-7", @placeholder = "Franchaise Code", @id = "txtBCode", @onchange = "UserCheck()", @autocomplete = "off" } })
+                        @Html.EditorFor(model => model.FranchaisePrefix, new { htmlAttributes = new { @class = "form-control col-4", @placeholder = "Prefix", @id = "txtPrefix", @autocomplete = "off", @style = "margin-left:1.65rem" } })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.FranchaisePrefix, "", new { @class = "text-danger" })
+                    @Html.ValidationMessageFor(model => model.FranchaiseCode, "", new { @class = "text-danger" })
+                    <span id="Status"></span>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FranchaiseName, htmlAttributes: new { @class = "col-form-label" })
+                    @Html.EditorFor(model => model.FranchaiseName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Franchaise Name", @id = "txtBName", @autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.FranchaiseName, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FranchaiseMobileNo, htmlAttributes: new { @class = "col-form-label" })
+                    @Html.EditorFor(model => model.FranchaiseMobileNo, new { htmlAttributes = new { @class = "form-control", @placeholder = "Phone No", @id = "txtPhoneNo", @autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.FranchaiseMobileNo, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group ">
+                    @Html.LabelFor(model => model.FranchaiseManager, htmlAttributes: new { @class = "col-form-label" })
+                    @Html.EditorFor(model => model.FranchaiseManager, new { htmlAttributes = new { @class = "form-control", @placeholder = "Manager Name", @id = "txtManagerName", @autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.FranchaiseManager, "", new { @class = "text-danger" })
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-6 col-sm-12">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FranchaiseAddress, htmlAttributes: new { @class = "col-form-label" })
+                    @Html.EditorFor(model => model.FranchaiseAddress, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address", @id = "txtAddress", @autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.FranchaiseAddress, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.StateName, htmlAttributes: new { @class = "col-form-label" })
+                    @Html.DropDownListFor(model => model.StateName, new SelectList(ViewBag.StateList, "Value", "Value"), "--Select State--", new { @class = "form-control" })
+                    @Html.ValidationMessageFor(model => model.StateName, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.CityName, htmlAttributes: new { @class = "col-form-label" })
+                    @Html.EditorFor(model => model.CityName, new { htmlAttributes = new { @class = "form-control", @placeholder = "City", @id = "txtCityName", @autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.CityName, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FranchaiseOpeningDate, htmlAttributes: new { @class = "col-form-label" })
+                    @Html.EditorFor(model => model.FranchaiseOpeningDate, new { htmlAttributes = new { @class = "form-control", @id = "datepicker", @placeholder = "Opening Date", @autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.FranchaiseOpeningDate, "", new { @class = "text-danger" })
+                </div>
+                <div class="form-group" style="display:none;">
+                    <div class="col-md-12 col-sm-12">
+                        @Html.EditorFor(model => model.OpSection, new { htmlAttributes = new { @class = "form-control", @id = "opstring" } })
+                    </div>
+                </div>
+                <div class="form-group text-right">
+                    <div class="mt-md-4 mb-4">
+                        <input type="submit" value="Update" id="btnUpdate" class="btn btn-primary btn-sm" />
+                        <input type="submit" value="Save" id="btnsave" class="btn btn-success btn-sm" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+

@@ -1,0 +1,131 @@
+﻿@model AccuFintech.Models.QuestionMasterModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+@if (TempData["Status"] != null)
+{
+    if (TempData["Status"].Equals("Ok"))
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> @TempData["Message"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Failed!</strong> @TempData["Message"]
+        </div>
+    }
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="font-weight-bold">Add Question</h5>
+            <hr />
+            <div class="row">
+                @Html.HiddenFor(model => model.Qid)
+                <div class="col-md-6 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12"> Question Set</label>
+                        <div class="col-md-8 col-12">
+                            @Html.DropDownListFor(model => model.QSet, new SelectList(ViewBag.QuestionsetList), "--Select Set--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.QSet, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12 col-12">
+                    <div class="form-group row">
+                        <div class="col-md-12 col-12">
+                            @Html.TextAreaFor(model => model.Question, new { @class = "form-control", @placeholder = "Enter Question", @rows = "4" })
+                            @Html.ValidationMessageFor(model => model.Question, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-2 col-12"> A &nbsp;&nbsp;<input type="radio" id="A_ID" name="anslist[]" value="A" /></label>
+                        <div class="col-md-10 col-12">
+                            @Html.TextAreaFor(model => model.Ans1, new { @class = "form-control", @placeholder = "Enter Answer 1", @rows = "4" })
+                            @Html.ValidationMessageFor(model => model.Ans1, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-2 col-12"> B &nbsp;&nbsp;<input type="radio" id="B_ID" name="anslist[]" value="B" /></label>
+                        <div class="col-md-10 col-12">
+                            @Html.TextAreaFor(model => model.Ans2, new { @class = "form-control", @placeholder = "Enter Answer 2", @rows = "4" })
+                            @Html.ValidationMessageFor(model => model.Ans2, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-2 col-12"> C &nbsp;&nbsp;<input type="radio" id="C_ID" name="anslist[]" value="C" /></label>
+                        <div class="col-md-10 col-12">
+                            @Html.TextAreaFor(model => model.Ans3, new { @class = "form-control", @placeholder = "Enter Answer 3", @rows = "4" })
+                            @Html.ValidationMessageFor(model => model.Ans3, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-2 col-12"> D &nbsp;&nbsp;<input type="radio" id="D_ID" name="anslist[]" value="D" /></label>
+                        <div class="col-md-10 col-12">
+                            @Html.TextAreaFor(model => model.Ans4, new { @class = "form-control", @placeholder = "Enter Answer 4", @rows = "4" })
+                            @Html.ValidationMessageFor(model => model.Ans4, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-12">
+                    <div class="d-flex justify-content-end">
+                        @Html.HiddenFor(model => model.RightAns)
+                        @Html.HiddenFor(model => model.opsection)
+                        <button type="submit" onclick="GetRightAns()" class="btn btn-primary btn-sm">Save</button>
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-2">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm w-100" id="TBL_QuestionList">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Quesion</th>
+                            <th>Answer 1</th>
+                            <th>Answer 2</th>
+                            <th>Answer 3</th>
+                            <th>Answer 4</th>
+                            <th>Right Answer</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script src="~/Scripts/ProjectScripts/Exam/QuestionMaster.js"></script>

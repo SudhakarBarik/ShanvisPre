@@ -1,0 +1,51 @@
+﻿@model IEnumerable<AccuFintech.Models.MenuModel>
+
+<ul class="list-unstyled components">
+    @foreach (var m in Model)
+    {
+        if (m.MenuParentID == 0)
+        {
+            var submenu = Model.Where(n => n.MenuParentID == m.MenuID).ToList();
+
+            if (submenu != null && submenu.Count > 0)
+            {
+                <li>
+                    <a href="#@m.MenuName.Replace(" ","")" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+                        <i class="fas @m.Icon"></i> &nbsp;&nbsp;&nbsp;<span class="main_menu_name">@m.MenuName</span>
+                    </a>
+                    <ul class="UlMenuClass collapse list-unstyled" id="@m.MenuName.Replace(" ","")">
+                        @foreach (var s in submenu)
+                        {
+                            var subsubMenu = Model.Where(n => n.MenuParentID == s.MenuID).ToList();
+                            if (subsubMenu != null && subsubMenu.Count > 0)
+                            {
+                                <li>
+                                    <a href="#@s.MenuName"><i class="far fa-circle"></i>@s.MenuName<i class="right fas fa-angle-left"></i></a>
+                                    <ul class="list-unstyled components" id="@s.MenuName">
+                                        @foreach (var ss in subsubMenu)
+                                        {
+                                            <li>
+                                                <a href="@Url.Action("Index", ss.ControllerName)">@ss.MenuName</a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </li>
+                            }
+                            else
+                            {
+                                <li>
+                                    <a href="@Url.Action("Index", s.ControllerName)">@s.MenuName</a>
+                                </li>
+                            }
+
+                        }
+                    </ul>
+                </li>
+            }
+
+        }
+
+
+    }
+
+</ul>

@@ -1,0 +1,1475 @@
+USE [master]
+GO
+/****** Object:  Database [SYS_ACCUFINTECH]    Script Date: 2/22/2024 16:20:27 ******/
+CREATE DATABASE [SYS_ACCUFINTECH]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'SYS_ACCUFINTECH', FILENAME = N'C:\SQL Data\SYS_ACCUFINTECH.mdf' , SIZE = 73728KB , MAXSIZE = UNLIMITED, FILEGROWTH = 65536KB )
+ LOG ON 
+( NAME = N'SYS_ACCUFINTECH_log', FILENAME = N'C:\SQL Data\SYS_ACCUFINTECH_log.ldf' , SIZE = 8192KB , MAXSIZE = 2048GB , FILEGROWTH = 65536KB )
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET COMPATIBILITY_LEVEL = 130
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [SYS_ACCUFINTECH].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET AUTO_CLOSE OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET  MULTI_USER 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET TARGET_RECOVERY_TIME = 60 SECONDS 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET DELAYED_DURABILITY = DISABLED 
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET QUERY_STORE = OFF
+GO
+USE [SYS_ACCUFINTECH]
+GO
+ALTER DATABASE SCOPED CONFIGURATION SET LEGACY_CARDINALITY_ESTIMATION = OFF;
+GO
+ALTER DATABASE SCOPED CONFIGURATION SET MAXDOP = 0;
+GO
+ALTER DATABASE SCOPED CONFIGURATION SET PARAMETER_SNIFFING = ON;
+GO
+ALTER DATABASE SCOPED CONFIGURATION SET QUERY_OPTIMIZER_HOTFIXES = OFF;
+GO
+USE [SYS_ACCUFINTECH]
+GO
+/****** Object:  User [WIS_ACCUFINTECH]    Script Date: 2/22/2024 16:20:29 ******/
+CREATE USER [WIS_ACCUFINTECH] FOR LOGIN [WIS_ACCUFINTECH] WITH DEFAULT_SCHEMA=[dbo]
+GO
+ALTER ROLE [db_owner] ADD MEMBER [WIS_ACCUFINTECH]
+GO
+/****** Object:  UserDefinedFunction [dbo].[SplitString]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+
+CREATE FUNCTION [dbo].[SplitString]
+(
+	@list as varchar(max), 
+	@delim as varchar(10)
+)
+RETURNS @listTable table(Value nvarchar(max))
+AS
+BEGIN
+    --Declare helper to identify the position of the delim
+    DECLARE @DelimPosition INT
+    
+    --Prime the loop, with an initial check for the delim
+    SET @DelimPosition = CHARINDEX(@delim, @list)
+
+    --Loop through, until we no longer find the delimiter
+    WHILE @DelimPosition > 0
+    BEGIN
+        --Add the item to the table
+        INSERT INTO @listTable(Value)
+            VALUES(CAST(RTRIM(LEFT(@list, @DelimPosition - 1)) AS nvarchar(50)))
+    
+        --Remove the entry from the List
+        SET @list = right(@list, len(@list) - @DelimPosition)
+
+        --Perform position comparison
+        SET @DelimPosition = CHARINDEX(@delim, @list)
+    END
+
+    --If we still have an entry, add it to the list
+    IF len(@list) > 0
+        insert into @listTable(Value)
+        values(CAST(RTRIM(@list) AS nvarchar(max)))
+
+  RETURN
+END
+GO
+/****** Object:  Table [dbo].[MRG_Question1]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MRG_Question1](
+	[F1] [float] NULL,
+	[Question] [nvarchar](255) NULL,
+	[A] [nvarchar](255) NULL,
+	[B] [nvarchar](255) NULL,
+	[C] [nvarchar](255) NULL,
+	[D] [nvarchar](255) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[MRG_Question2]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[MRG_Question2](
+	[Qno] [float] NULL,
+	[Question] [nvarchar](255) NULL,
+	[A] [nvarchar](255) NULL,
+	[B] [nvarchar](255) NULL,
+	[C] [nvarchar](255) NULL,
+	[D] [nvarchar](255) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_BatchMaster]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_BatchMaster](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[BatchID] [nvarchar](50) NULL,
+	[BatchName] [varchar](100) NULL,
+	[CourseID] [nvarchar](50) NULL,
+	[Session] [nvarchar](50) NULL,
+	[BStartDate] [int] NULL,
+	[BEndDate] [int] NULL,
+	[Frequncy] [varchar](100) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_BatchSchedule]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_BatchSchedule](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[BatchID] [nvarchar](50) NULL,
+	[BDay] [varchar](20) NULL,
+	[BDates] [int] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_CertificateUpload]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_CertificateUpload](
+	[StudentID] [varchar](50) NULL,
+	[Certificate] [varchar](100) NULL,
+	[Marksheet] [varchar](100) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_Configuration]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_Configuration](
+	[ConfigField] [nvarchar](50) NULL,
+	[ConfigValue] [nvarchar](50) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_CourseMaster]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_CourseMaster](
+	[ProgramCode] [varchar](50) NOT NULL,
+	[Coursename] [varchar](200) NULL,
+	[CourseModule] [varchar](500) NULL,
+	[MonthDuration] [varchar](50) NULL,
+	[HourDuration] [varchar](50) NULL,
+	[Eligibility] [varchar](50) NULL,
+	[CareerOpportunities] [varchar](500) NULL,
+	[Fees] [nvarchar](100) NULL,
+ CONSTRAINT [PK_TBL_CourseMaster] PRIMARY KEY CLUSTERED 
+(
+	[ProgramCode] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_District]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_District](
+	[districtid] [int] NOT NULL,
+	[district_name] [varchar](100) NOT NULL,
+	[state_id] [int] NULL,
+	[district_status] [varchar](10) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[districtid] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_Documents]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_Documents](
+	[Student] [varchar](50) NULL,
+	[Franchaise] [varchar](50) NULL,
+	[Course] [varchar](50) NULL,
+	[Certificate] [varchar](100) NULL,
+	[Marksheet] [varchar](100) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_ExamDetails]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_ExamDetails](
+	[StudentID] [varchar](50) NULL,
+	[QuestionSet] [varchar](50) NULL,
+	[Examdate] [int] NULL,
+	[Starttime] [int] NULL,
+	[EndTime] [int] NULL,
+	[TotalQuestion] [int] NULL,
+	[NoOfReviewed] [int] NULL,
+	[NoOfAttempt] [int] NULL,
+	[NoOfPending] [int] NULL,
+	[Marks] [int] NULL,
+	[Discount] [int] NULL,
+	[UtimeStamp] [datetime] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_FacultyMaster]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_FacultyMaster](
+	[FacultyID] [varchar](30) NULL,
+	[FranchaiseCode] [varchar](20) NULL,
+	[FacultyName] [varchar](100) NULL,
+	[Gender] [varchar](20) NULL,
+	[DOB] [int] NULL,
+	[Phone] [varchar](20) NULL,
+	[Email] [nvarchar](50) NULL,
+	[AadharNo] [varchar](20) NULL,
+	[Address] [nvarchar](500) NULL,
+	[State] [varchar](50) NULL,
+	[District] [varchar](50) NULL,
+	[PinCode] [varchar](10) NULL,
+	[MaxQualification] [nvarchar](100) NULL,
+	[Department] [varchar](50) NULL,
+	[TotalExp] [varchar](20) NULL,
+	[JoiningDate] [datetime] NOT NULL,
+	[Password] [nvarchar](50) NULL,
+	[FProfilePic] [varchar](50) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_FeesStructure]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_FeesStructure](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[FranchaiseCode] [nvarchar](50) NOT NULL,
+	[Studentid] [nvarchar](50) NOT NULL,
+	[Course] [nvarchar](50) NULL,
+	[Batch] [nvarchar](50) NULL,
+	[TotalFees] [nvarchar](100) NULL,
+	[PaidFees] [float] NULL,
+	[PayUTimestamp] [datetime] NULL,
+	[PayType] [varchar](50) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_FranchaiseMaster]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_FranchaiseMaster](
+	[FranchaiseID] [bigint] IDENTITY(1,1) NOT NULL,
+	[FranchaiseCode] [varchar](50) NOT NULL,
+	[Name] [varchar](100) NOT NULL,
+	[Add1] [varchar](200) NULL,
+	[Prefix] [varchar](10) NOT NULL,
+	[FranchaisePhNo] [varchar](50) NULL,
+	[TopFranchaise] [varchar](5) NULL,
+	[ACodeSerial] [bigint] NULL,
+	[RankUpTo] [tinyint] NULL,
+	[OpenBal] [float] NULL,
+	[ManagerName] [varchar](100) NULL,
+	[dtofop] [int] NULL,
+	[ZCODE] [varchar](10) NULL,
+	[city] [varchar](50) NULL,
+	[state] [varchar](50) NULL,
+	[MaxAccNo] [int] NULL,
+ CONSTRAINT [PK_BCODE] PRIMARY KEY CLUSTERED 
+(
+	[FranchaiseID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_Menu]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_Menu](
+	[MenuID] [bigint] NOT NULL,
+	[MenuName] [varchar](100) NULL,
+	[UpperCode] [bigint] NULL,
+	[ControllerName] [varchar](150) NULL,
+	[ActionName] [varchar](150) NULL,
+	[Icon] [nvarchar](150) NULL,
+ CONSTRAINT [PK_TBL_Menu] PRIMARY KEY CLUSTERED 
+(
+	[MenuID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_QuestionMaster]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_QuestionMaster](
+	[QuestionID] [bigint] IDENTITY(1,1) NOT NULL,
+	[QuestionSet] [varchar](50) NULL,
+	[Question] [nvarchar](max) NULL,
+	[Answer1] [nvarchar](max) NULL,
+	[Answer2] [nvarchar](max) NULL,
+	[Answer3] [nvarchar](max) NULL,
+	[Answer4] [nvarchar](max) NULL,
+	[RightAnswer] [varchar](50) NULL,
+	[UtimeStamp] [datetime] NULL,
+	[CName] [nvarchar](100) NULL,
+ CONSTRAINT [PK_TBL_QuestionMaster] PRIMARY KEY CLUSTERED 
+(
+	[QuestionID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_Questions2402222]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_Questions2402222](
+	[QUESTIONS] [nvarchar](255) NULL,
+	[ANSWER1] [nvarchar](255) NULL,
+	[ANSWER2] [nvarchar](255) NULL,
+	[ANSWER3] [nvarchar](255) NULL,
+	[ANSWER4] [nvarchar](255) NULL,
+	[RIGHT ANSWER] [nvarchar](255) NULL,
+	[CNAME] [nvarchar](255) NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_SessionMaster]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_SessionMaster](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[SessionName] [varchar](50) NULL,
+	[StartDate] [int] NULL,
+	[EndDate] [int] NULL,
+	[CreateDate] [datetime] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_State]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_State](
+	[state_id] [int] NOT NULL,
+	[state_name] [varchar](100) NOT NULL,
+	[status] [varchar](10) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[state_id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_Student]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_Student](
+	[StudentID] [varchar](50) NOT NULL,
+	[Studentname] [varchar](100) NULL,
+	[Gurdian] [varchar](50) NULL,
+	[Husband] [varchar](50) NULL,
+	[Age] [varchar](50) NULL,
+	[Email] [varchar](50) NULL,
+	[Phone] [varchar](50) NULL,
+	[DOB] [int] NULL,
+	[Gender] [varchar](50) NULL,
+	[MaritalStatus] [varchar](50) NULL,
+	[Aadharno] [varchar](50) NULL,
+	[Address] [varchar](500) NULL,
+	[District] [varchar](50) NULL,
+	[State] [varchar](50) NULL,
+	[Pincode] [varchar](10) NULL,
+	[Course] [varchar](50) NULL,
+	[AcademicQualification] [varchar](50) NULL,
+	[StudentPicture] [varchar](100) NULL,
+	[StudentIDProof] [varchar](100) NULL,
+	[Password] [varchar](100) NULL,
+	[JoiningDate] [int] NULL,
+	[Utimestamp] [datetime] NULL,
+	[OldStudentID] [varchar](50) NULL,
+	[Examregdate] [int] NULL,
+	[Examdate] [int] NULL,
+	[Franchaise] [varchar](50) NULL,
+	[AltPhone] [varchar](20) NULL,
+	[Religion] [varchar](50) NULL,
+	[Nationality] [varchar](50) NULL,
+	[Medium] [varchar](50) NULL,
+	[IsPhysicallyChallange] [varchar](10) NULL,
+	[StudentSignature] [varchar](100) NULL,
+	[BatchID] [nvarchar](50) NULL,
+	[PayType] [nvarchar](50) NULL,
+	[CourseFees] [nvarchar](100) NULL,
+	[PaidFees] [nvarchar](100) NULL,
+ CONSTRAINT [PK_TBL_Student] PRIMARY KEY CLUSTERED 
+(
+	[StudentID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_StudentAnswer]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_StudentAnswer](
+	[StudentID] [varchar](50) NULL,
+	[QuestionSet] [varchar](50) NULL,
+	[QuestionID] [varchar](50) NULL,
+	[AnsOption] [varchar](50) NULL,
+	[RightAns] [varchar](50) NULL,
+	[IsCompleted] [int] NULL,
+	[Utimestamp] [datetime] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_StudentMarks]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_StudentMarks](
+	[StudentID] [varchar](50) NULL,
+	[CourseID] [varchar](50) NULL,
+	[SubjectID] [varchar](50) NULL,
+	[FullMarks] [int] NULL,
+	[PassMarks] [int] NULL,
+	[Theory] [int] NULL,
+	[Practical] [int] NULL,
+	[MarksObtained] [int] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[TBL_SubjectMaster]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[TBL_SubjectMaster](
+	[SubjectID] [varchar](50) NULL,
+	[CourseID] [varchar](50) NULL,
+	[Subject] [varchar](100) NULL,
+	[FullMarks] [int] NULL,
+	[PassMarks] [int] NULL
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[USER_Master]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[USER_Master](
+	[UserID] [varchar](20) NOT NULL,
+	[Password] [varchar](20) NOT NULL,
+	[UserType] [varchar](50) NOT NULL,
+	[FullName] [varchar](100) NULL,
+	[Mobile] [varchar](12) NULL,
+	[LockMode] [bit] NULL,
+ CONSTRAINT [PK_USER_Master] PRIMARY KEY CLUSTERED 
+(
+	[UserID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[USER_TypeMaster]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[USER_TypeMaster](
+	[UserType] [varchar](50) NOT NULL,
+	[Designation] [varchar](100) NULL,
+	[IsBackDate] [varchar](3) NULL,
+	[Extention] [int] NULL,
+	[IsUpdate] [varchar](3) NULL,
+	[IsDelete] [varchar](3) NULL,
+	[AllBranch] [varchar](3) NULL,
+	[RankUpTo] [tinyint] NULL,
+	[AllPlans] [varchar](3) NULL,
+	[IsReprint] [varchar](3) NULL,
+	[AllReportBranch] [varchar](3) NULL,
+	[TeamDesc] [nvarchar](500) NULL,
+ CONSTRAINT [PK_USER_TypeMaster] PRIMARY KEY CLUSTERED 
+(
+	[UserType] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+/****** Object:  Table [dbo].[WEB_MenuPermission]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE TABLE [dbo].[WEB_MenuPermission](
+	[Slno] [bigint] IDENTITY(1,1) NOT NULL,
+	[UserType] [varchar](150) NULL,
+	[MenuID] [bigint] NULL
+) ON [PRIMARY]
+GO
+ALTER TABLE [dbo].[TBL_District] ADD  DEFAULT (NULL) FOR [state_id]
+GO
+ALTER TABLE [dbo].[TBL_ExamDetails] ADD  CONSTRAINT [DF_TBL_ExamDetails_UtimeStamp]  DEFAULT (getdate()) FOR [UtimeStamp]
+GO
+ALTER TABLE [dbo].[TBL_FacultyMaster] ADD  DEFAULT (getdate()) FOR [JoiningDate]
+GO
+ALTER TABLE [dbo].[TBL_QuestionMaster] ADD  CONSTRAINT [DF_TBL_QuestionMaster_UtimeStamp]  DEFAULT (getdate()) FOR [UtimeStamp]
+GO
+ALTER TABLE [dbo].[TBL_SessionMaster] ADD  DEFAULT (getdate()) FOR [CreateDate]
+GO
+ALTER TABLE [dbo].[TBL_Student] ADD  CONSTRAINT [DF_TBL_Student_Utimestamp]  DEFAULT (getdate()) FOR [Utimestamp]
+GO
+ALTER TABLE [dbo].[TBL_StudentAnswer] ADD  CONSTRAINT [DF_TBL_StudentAnswer_Utimestamp]  DEFAULT (getdate()) FOR [Utimestamp]
+GO
+/****** Object:  StoredProcedure [dbo].[AddORUpdateFacultyMaster]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROC [dbo].[AddORUpdateFacultyMaster] (
+  @FacultyID varchar(30),
+  @FranchiseCode varchar(20),
+  @FacultyName varchar(100),
+  @Gender varchar(20),
+  @DOB int,
+  @Phone varchar(20),
+  @Email nvarchar(50),
+  @AadharNo varchar(20),
+  @Address nvarchar(500),
+  @State varchar(50),
+  @District varchar(50),
+  @PinCode varchar(10),
+  @MaxQualification nvarchar(100),
+  @Department varchar(50),
+  @TotalExp varchar(20),
+  @Password nvarchar(50),
+  @Operation varchar(50) ,
+  @ERRORCODE int out,
+  @FacultyIDReturn VARCHAR(50) OUT  
+
+)
+AS
+BEGIN
+  BEGIN TRANSACTION;
+	     DECLARE @FacultyIDVal as Varchar(50);  
+  IF @Operation = 'INSERT'
+  BEGIN
+
+ SELECT @FacultyID = MAX(FacultyID) FROM TBL_FacultyMaster;  
+   IF @FacultyID IS NULL  
+   BEGIN  
+      SET @FacultyID = (SELECT 'FIF'+ right(REPLICATE('0',4) + cast('1' as nvarchar(50)), 4) + 'A');  
+   END  
+   ELSE  
+   BEGIN  
+    SET @FacultyID = REPLACE(@FacultyID,'A','')  
+    SET @FacultyIDVal = (SELECT SUBSTRING(@FacultyID, PATINDEX('%[1-9]%', @FacultyID), LEN(@FacultyID))) + 1;  
+    SET @FacultyID = (SELECT 'FIF'+ right(REPLICATE('0',4) + cast(@FacultyIDVal as nvarchar(50)), 4) + 'A');  
+   END  
+
+    INSERT INTO [dbo].[TBL_FacultyMaster] (
+      [FacultyID],
+      [FranchaiseCode],
+      [FacultyName],
+      [Gender],
+      [DOB],
+      [Phone],
+      [Email],
+      [AadharNo],
+      [Address],
+      [State],
+      [District],
+      [PinCode],
+      [MaxQualification],
+      [Department],
+      [TotalExp],
+      [Password]
+    )
+    VALUES (
+      @FacultyID,
+      @FranchiseCode,
+      @FacultyName,
+      @Gender,
+      @DOB,
+      @Phone,
+      @Email,
+      @AadharNo,
+      @Address,
+      @State,
+      @District,
+      @PinCode,
+      @MaxQualification,
+      @Department,
+      @TotalExp,
+      @Password
+    )
+
+  END
+ 
+  BEGIN
+    UPDATE [dbo].[TBL_FacultyMaster]
+    SET
+      [FranchaiseCode] = @FranchiseCode,
+      [FacultyName] = @FacultyName,
+      [Gender] = @Gender,
+      [DOB] = @DOB,
+      [Phone] = @Phone,
+      [Email] = @Email,
+      [AadharNo] = @AadharNo,
+      [Address] = @Address,
+      [State] = @State,
+      [District] = @District,
+      [PinCode] = @PinCode,
+      [MaxQualification] = @MaxQualification,
+      [Department] = @Department,
+      [TotalExp] = @TotalExp,
+      [Password] = @Password
+    WHERE [FacultyID] = @FacultyID;
+
+    SET @ERRORCODE = 0;
+	set @FacultyIDReturn = @FacultyID
+  END
+ 
+
+  IF @ERRORCODE = 0
+  BEGIN
+    COMMIT TRANSACTION;
+  END
+  ELSE
+  BEGIN
+    SET @ERRORCODE = @@ERROR;
+	set @FacultyIDReturn = '';
+    ROLLBACK TRANSACTION;
+  END
+  end
+GO
+/****** Object:  StoredProcedure [dbo].[USP_AddExamDetails]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[USP_AddExamDetails]
+(
+	@StudentID VARCHAR(50),
+	@QuestionSet VARCHAR(50),
+	@Examdate INT,
+	@Starttime INT,
+	@EndTime INT,
+	@TotalQuestion INT,
+	@NoOfReviewed INT,
+	@NoOfAttempt INT,
+	@NoOfPending INT,
+	@Marks INT,
+	@ERRORCODE INT OUT
+)
+AS
+BEGIN TRY
+	BEGIN TRAN
+		DECLARE @NoOfQuestion INT
+		DECLARE @MarksPercentage FLOAT
+		DECLARE @Discount FLOAT
+		SELECT @NoOfQuestion=COUNT(*) FROM TBL_StudentAnswer WHERE StudentID = @StudentID AND QuestionSet = @QuestionSet
+		AND CONVERT(VARCHAR(100),Utimestamp,112) = @Examdate
+		
+		IF @Marks > 0
+		BEGIN
+			SET @MarksPercentage = (@Marks * 100) / @NoOfQuestion;
+		END
+		ELSE
+		BEGIN
+			SET @MarksPercentage = 0;
+		END
+		
+		SELECT @Discount=0;
+
+		INSERT INTO [TBL_ExamDetails]([StudentID],[QuestionSet],[Examdate],[Starttime],[EndTime],[TotalQuestion],[NoOfReviewed]
+		,[NoOfAttempt],[NoOfPending],[Marks],[Discount]) VALUES(@StudentID, @QuestionSet, @Examdate, @Starttime, 
+		@EndTime, @TotalQuestion, @NoOfReviewed, @NoOfAttempt, @NoOfPending, @Marks, @Discount)
+
+	COMMIT TRAN
+	SET @ERRORCODE = 0
+END TRY
+BEGIN CATCH
+	SET @ERRORCODE = @@ERROR
+	ROLLBACK TRAN
+END CATCH
+
+GO
+/****** Object:  StoredProcedure [dbo].[USP_AddOrUpdateCourse]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[USP_AddOrUpdateCourse]  
+(  
+ @Programcode VARCHAR(50),  
+ @Programname VARCHAR(200),  
+ @MODULE VARCHAR(500),  
+ @MonthDuration VARCHAR(10),  
+ @HourDuration VARCHAR(10),  
+ @Eligibility VARCHAR(100),  
+ @CareerOpportunities VARCHAR(500),  
+ @Fees nvarchar(100) ,
+ @Opsection VARCHAR(50),  
+ @ERRORCODE INT OUT  
+)  
+AS  
+BEGIN TRY  
+ BEGIN TRAN  
+  IF @Opsection = 'INSERT'  
+  BEGIN  
+   INSERT INTO [TBL_CourseMaster]([ProgramCode],[Coursename],[CourseModule],[MonthDuration],[HourDuration],[Eligibility]  
+   ,[CareerOpportunities] ,[Fees])VALUES(@Programcode, @Programname, @MODULE, @MonthDuration, @HourDuration, @Eligibility, @CareerOpportunities,@Fees)  
+  END  
+  ELSE  
+  BEGIN  
+   UPDATE [TBL_CourseMaster] SET   
+   [Coursename] = @Programname,  
+   [CourseModule] = @MODULE,  
+   [MonthDuration] = @MonthDuration,  
+   [HourDuration] = @HourDuration,  
+   [Eligibility] = @Eligibility,  
+   [CareerOpportunities] = @CareerOpportunities,
+   [Fees] = @Fees
+   WHERE [ProgramCode] = @Programcode  
+  END  
+ COMMIT TRAN  
+ SET @ERRORCODE = 0  
+END TRY  
+BEGIN CATCH  
+ SET @ERRORCODE = @@ERROR  
+ ROLLBACK TRAN  
+END CATCH
+GO
+/****** Object:  StoredProcedure [dbo].[USP_AddOrUpdateStudent]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[USP_AddOrUpdateStudent]      
+(      
+ @StudentID VARCHAR(50)      
+ ,@Studentname VARCHAR(50)      
+ ,@Password VARCHAR(50)      
+ ,@Gurdian VARCHAR(50)      
+ ,@Age VARCHAR(50)      
+ ,@Email VARCHAR(50)      
+ ,@Phone VARCHAR(50)      
+ ,@DOB INT      
+ ,@Gender VARCHAR(50)      
+ ,@Husband VARCHAR(50)      
+ ,@Aadharno VARCHAR(50)      
+ ,@Address VARCHAR(500)      
+ ,@District VARCHAR(50)      
+ ,@State VARCHAR(50)      
+ ,@Pincode VARCHAR(50)      
+ ,@Course VARCHAR(50)      
+ ,@AcademicQualification VARCHAR(50)      
+ ,@StudentPicture VARCHAR(50)      
+ ,@StudentIdProof VARCHAR(50)      
+ ,@JoiningDate INT      
+ ,@MaritalStatus VARCHAR(50)      
+ ,@Franchaise VARCHAR(50)      
+ ,@AltPhone VARCHAR(20)      
+ ,@Religion VARCHAR(50)      
+ ,@Nationality VARCHAR(50)      
+ ,@Medium VARCHAR(50)      
+ ,@IsPhysicallyChallange VARCHAR(10)    
+ ,@BatchID nvarchar(50)  
+ ,@PayType nvarchar(50)  
+,@CourseFees nvarchar(100)  
+,@PaidFees nvarchar(100)  
+ ,@opsection VARCHAR(50)      
+ ,@StudentIDReturn VARCHAR(50) OUT      
+ ,@ERRORCODE INT OUT      
+)      
+AS      
+BEGIN TRY      
+ BEGIN TRAN      
+  DECLARE @CourseDuration INT      
+  DECLARE @ExamRegdate INT      
+  DECLARE @Examdate INT      
+      
+  SELECT @CourseDuration = MonthDuration FROM TBL_CourseMaster WHERE Programcode = @Course      
+      
+  select @ExamRegdate = FORMAT(DATEADD(MM, (@CourseDuration-1), CONVERT(datetime, convert(varchar(10), @JoiningDate))),'yyyyMMdd')       
+  SELECT @Examdate = FORMAT(DATEADD(DAY, 7 ,DATEADD(MM, @CourseDuration, CONVERT(datetime, convert(varchar(10), @JoiningDate)))),'yyyyMMdd')       
+      
+  IF @opsection = 'INSERT'      
+  BEGIN      
+   DECLARE @StudentIDVal as Varchar(50);      
+   DECLARE @CodePrefix as Varchar(50);      
+   DECLARE @SLNo as int      
+   SELECT @StudentID = MAX(StudentID) FROM [TBL_Student];      
+      
+   select @CodePrefix=Prefix from tbl_franchaisemaster where FranchaiseID =@Franchaise      
+   select @SLNo=isnull(configvalue,0)+1 from tbl_configuration where configfield='LastStudentID'      
+   update tbl_configuration set configvalue=@SLNo where configfield='LastStudentID'      
+   set @StudentID=@CodePrefix + right('000000'+CAST(@SLNo as nvarchar(50)),6)      
+      
+      
+   --IF @StudentID IS NULL      
+   --BEGIN      
+   --   SET @StudentID = (SELECT 'ST'+ right(REPLICATE('0',6) + cast('1' as nvarchar(50)), 6));      
+   --END      
+   --ELSE      
+   --BEGIN      
+   -- SET @StudentIDVal = (SELECT SUBSTRING(@StudentID, PATINDEX('%[1-9]%', @StudentID), LEN(@StudentID))) + 1;      
+   -- SET @StudentID = (SELECT 'ST'+ right(REPLICATE('0',6) + cast(@StudentIDVal as nvarchar(50)), 6));      
+   --END      
+      
+   INSERT INTO [TBL_Student]([StudentID],[Studentname],[Gurdian],[Age],[Email],[Phone],[DOB],[Gender],[Aadharno]      
+   ,[Address],[District],[State],[Pincode],[Course],[AcademicQualification],[StudentPicture],[Password],[JoiningDate],      
+   [MaritalStatus],[StudentIDProof],[Examregdate],[Examdate],[Franchaise],[Husband],[AltPhone],[Religion],[Nationality],[Medium],[IsPhysicallyChallange],BatchID,PayType,CourseFees,PaidFees)      
+   VALUES(@StudentID,@Studentname,@Gurdian,@Age,@Email,@Phone,@DOB,@Gender,@Aadharno,@Address,@District,@State,@Pincode      
+   ,@Course,@AcademicQualification,@StudentPicture,@Password,@JoiningDate,@MaritalStatus,@StudentIDProof, @ExamRegdate,       
+   @Examdate, @Franchaise, @Husband, @AltPhone, @Religion, @Nationality, @Medium, @IsPhysicallyChallange,@BatchID,@PayType,@CourseFees,@PaidFees)      
+
+
+   insert into TBL_FeesStructure (FranchaiseCode , Studentid , Course , Batch , TotalFees , PaidFees ,PayType ,PayUTimestamp) values
+   (@Franchaise, @StudentID, @Course,@BatchID, @CourseFees, @PaidFees,@PayType, GETDATE())
+
+  END      
+  ELSE      
+  BEGIN      
+   UPDATE [TBL_Student]      
+      SET [Studentname] = @Studentname      
+      ,[Gurdian] = @Gurdian      
+      ,[Age] = @Age      
+      ,[Email] = @Email      
+      ,[Phone] = @Phone      
+      ,[DOB] = @DOB      
+      ,[Gender] = @Gender      
+      ,[Aadharno] = @Aadharno      
+      ,[Address] = @Address      
+      ,[District] = @District      
+      ,[State] = @State      
+      ,[Pincode] = @Pincode      
+      ,[Course] = @Course      
+      ,[AcademicQualification] = @AcademicQualification      
+      ,[Password] = @Password      
+      ,[JoiningDate] = @JoiningDate      
+      ,[MaritalStatus] = @MaritalStatus      
+      ,[Examregdate] = @ExamRegdate      
+      ,[Examdate] = @Examdate      
+      ,[Franchaise] = @Franchaise      
+      ,[Husband] = @Husband      
+      ,[AltPhone] = @AltPhone      
+      ,[Religion] = @Religion      
+      ,[Nationality] = @Nationality      
+      ,[Medium] = @Medium      
+      ,[IsPhysicallyChallange] = @IsPhysicallyChallange   
+   ,BatchID = @BatchID  
+    WHERE [StudentID] = @StudentID      
+  END      
+ COMMIT TRAN      
+ SET @ERRORCODE = 0      
+ SET @StudentIDReturn = @StudentID      
+END TRY      
+BEGIN CATCH      
+ SET @ERRORCODE = @@ERROR      
+ SET @StudentIDReturn = ''      
+ ROLLBACK TRAN      
+END CATCH      
+GO
+/****** Object:  StoredProcedure [dbo].[USP_AddQuestion]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[USP_AddQuestion]
+(
+	@QuestionID INT,
+	@QuestionSet VARCHAR(50),
+	@Question nvarchar(MAX),
+	@Answer1 nvarchar(MAX),
+	@Answer2 nvarchar(MAX),
+	@Answer3 nvarchar(MAX),
+	@Answer4 nvarchar(MAX),
+	@RightAnswer VARCHAR(10),
+	@opsection VARCHAR(10),
+	@ERRORCODE INT OUT
+)
+AS
+BEGIN TRY
+	BEGIN TRAN
+		
+		IF @opsection = 'INSERT'
+		BEGIN
+			INSERT INTO [dbo].[TBL_QuestionMaster]([QuestionSet],[Question],[Answer1],[Answer2],[Answer3],[Answer4],[RightAnswer])
+			VALUES(@QuestionSet, @Question, @Answer1, @Answer2, @Answer3, @Answer4, @RightAnswer)
+		END
+		ELSE
+		BEGIN
+			UPDATE [dbo].[TBL_QuestionMaster]
+		   SET [QuestionSet] = @QuestionSet,
+			  [Question] = @Question,
+			  [Answer1] = @Answer1,
+			  [Answer2] = @Answer2,
+			  [Answer3] = @Answer3,
+			  [Answer4] = @Answer4,
+			  [RightAnswer] = @RightAnswer
+		  WHERE [QuestionID] = @QuestionID
+		END
+
+	COMMIT TRAN
+	SET @ERRORCODE = 0;
+END TRY
+BEGIN CATCH
+	SET @ERRORCODE = @@ERROR;
+	ROLLBACK TRAN
+END CATCH
+GO
+/****** Object:  StoredProcedure [dbo].[USP_CertificatePrintDetails]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[USP_CertificatePrintDetails]
+(
+	@StudentID VARCHAR(50)
+)
+AS
+BEGIN
+	SELECT S.StudentID, S.Studentname, S.Gurdian, S.StudentPicture, 
+	DATENAME(MONTH,(CONVERT(datetime, CAST(S.JoiningDate AS varchar(10)), 103))) + ' ' + CAST(YEAR(CONVERT(datetime, CAST(S.JoiningDate AS varchar(10)), 103)) AS varchar(50)) AS StartingMonth,
+	DATENAME(MONTH,(CONVERT(datetime, CAST(S.Examdate AS varchar(10)), 103))) + ' ' + CAST(YEAR(CONVERT(datetime, CAST(S.Examdate AS varchar(10)), 103)) AS varchar(50)) AS EndingMonth,
+	FORMAT(GETDATE(), 'dd MMMM yyyy') AS DateOfIssue,
+	C.Coursename + '(' + C.ProgramCode + ')' AS Coursename,
+	F.Center + '(' + F.FranchaiseID + ')' AS Center,
+	F.FranchaiseID, (F.Landmark + ', ' + F.Address + ', ' + F.Pincode) AS Address
+	FROM TBL_Student S INNER JOIN TBL_Franchaise F ON S.Franchaise = F.FranchaiseID
+	INNER JOIN TBL_CourseMaster C ON S.Course = C.ProgramCode 
+	WHERE StudentID = @StudentID
+END
+GO
+/****** Object:  StoredProcedure [dbo].[USP_CheckIsDateOverLap]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE proc [dbo].[USP_CheckIsDateOverLap]  
+(  
+@FromDate Varchar(50) ,  
+@ToDate varchar(50) 
+)  
+as  
+Begin  
+  
+SELECT  SessionName, StartDate, EndDate  
+FROM TBL_SessionMaster  
+WHERE ((StartDate BETWEEN @FromDate AND @Todate)  
+OR (EndDate BETWEEN @FromDate AND @Todate)  
+OR (@FromDate BETWEEN StartDate AND EndDate)  
+OR (@Todate BETWEEN StartDate AND EndDate))  
+  
+end
+GO
+/****** Object:  StoredProcedure [dbo].[USP_FetchQuestionAnswered]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[USP_FetchQuestionAnswered]
+(
+	@Questionset VARCHAR(50),
+	@StudentID VARCHAR(50)
+)
+AS
+BEGIN
+	DECLARE @TotalNoOfQuestion AS INT
+	DECLARE @NoOfQuestionAnswered AS INT
+	DECLARE @NoOfReviewedQuestion AS INT = 0
+	DECLARE @TotalMarks AS INT 
+
+	SELECT @TotalNoOfQuestion=COUNT(*) FROM TBL_QuestionMaster WHERE QuestionSet = @Questionset;
+	SELECT @NoOfQuestionAnswered=COUNT(*) FROM TBL_StudentAnswer WHERE StudentID = @StudentID AND QuestionSet = @Questionset AND IsCompleted IN (1,2);
+	SELECT @NoOfReviewedQuestion=COUNT(*) FROM TBL_StudentAnswer WHERE StudentID = @StudentID AND QuestionSet = @Questionset AND IsCompleted = 2;
+	
+	SELECT @TotalMarks = SUM(RightAns) FROM
+	(
+	SELECT CASE WHEN RightAnswer = AnsOption THEN 1 ELSE 0 END RightAns FROM TBL_QuestionMaster Q
+	INNER JOIN TBL_StudentAnswer S ON Q.QuestionID = S.QuestionID
+	WHERE S.StudentID = @StudentID AND Q.QuestionSet = @Questionset
+	) AS T
+	
+	SELECT @TotalNoOfQuestion AS TotalNoOfQuestion, @NoOfQuestionAnswered AS NoOfQuestionAnswered, 
+	@NoOfReviewedQuestion AS NoOfReviewedQuestion, @TotalMarks AS TotalMarks
+END
+GO
+/****** Object:  StoredProcedure [dbo].[Usp_GetFeeStructure]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE proc [dbo].[Usp_GetFeeStructure](
+@FranchaiseCode nvarchar(50),
+@Studentid  nvarchar(50)
+)
+as
+begin
+
+--,convert(nvarchar(12),CONVERT(date,payUtimestamp),101)as PayDt
+
+if @FranchaiseCode='All' or 	@Studentid='All'
+begin
+select x.FranchaiseCode,x.Studentid,x.Course,x.Batch,x.TotalFees,sum(x.PaidFees)TotalPaid,(x.TotalFees-x. totalpaid) as RemainFee,x.PayDt from (select FranchaiseCode,Studentid,Course,Batch,TotalFees,PaidFees,SUM(PaidFees) OVER (PARTITION BY Studentid) AS  totalpaid,convert(nvarchar(12),CONVERT(date,payUtimestamp),101)as PayDt from TBL_FeesStructure) as x group by x.Studentid,x.FranchaiseCode,x.Studentid,x.Course,x.Batch,x.TotalFees,x. totalpaid,x.PayDt
+end
+else if  @FranchaiseCode<>'' and @Studentid<>''
+begin
+select x.FranchaiseCode,x.Studentid,x.Course,x.Batch,x.TotalFees,sum(x.PaidFees)TotalPaid,(x.TotalFees-x. totalpaid) as RemainFee,x.PayDt from (select FranchaiseCode,Studentid,Course,Batch,TotalFees,PaidFees,SUM(PaidFees) OVER (PARTITION BY Studentid) AS  totalpaid,convert(nvarchar(12),CONVERT(date,payUtimestamp),101)as PayDt from TBL_FeesStructure) as x 
+ where x.FranchaiseCode=@FranchaiseCode and x.Studentid=@Studentid group by x.Studentid,x.FranchaiseCode,x.Studentid,x.Course,x.Batch,x.TotalFees,x. totalpaid,x.PayDt
+end
+else
+begin
+select x.FranchaiseCode,x.Studentid,x.Course,x.Batch,x.TotalFees,sum(x.PaidFees)TotalPaid,(x.TotalFees-x. totalpaid) as RemainFee,x.PayDt from (select FranchaiseCode,Studentid,Course,Batch,TotalFees,PaidFees,SUM(PaidFees) OVER (PARTITION BY Studentid) AS  totalpaid,convert(nvarchar(12),CONVERT(date,payUtimestamp),101)as PayDt from TBL_FeesStructure) as x 
+where x.FranchaiseCode=@FranchaiseCode or x.Studentid=@Studentid group by x.Studentid,x.FranchaiseCode,x.Studentid,x.Course,x.Batch,x.TotalFees,x. totalpaid,x.PayDt
+end
+end
+GO
+/****** Object:  StoredProcedure [dbo].[USP_InsertmenuPermission]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE  [dbo].[USP_InsertmenuPermission]
+(
+@UserType varchar(50),
+@UTypeAccessList AS nVARCHAR(MAX),
+@DELM AS VARCHAR(5)
+
+)
+AS
+BEGIN TRY
+BEGIN TRANSACTION
+	declare @ISDONE AS INT
+	DELETE FROM WEB_MenuPermission WHERE UserType=@UserType
+	INSERT INTO WEB_MenuPermission(UserType,MenuID)
+	SELECT @UserType,VALUE FROM dbo.SplitString(@UTypeAccessList,@DELM)
+	
+	SET @ISDONE=0
+	select @ISDONE
+COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	SET @ISDONE=@@ERROR 
+		select @ISDONE
+	ROLLBACK TRANSACTION
+END CATCH
+GO
+/****** Object:  StoredProcedure [dbo].[USP_InsertUserType]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE  [dbo].[USP_InsertUserType]
+(
+@InsertOrUpdate AS VARCHAR(20),
+@UserType AS VARCHAR(50),
+@Designation AS VARCHAR(100),
+@IsBackDate AS VARCHAR(5),
+@Extention AS INT,
+@IsUpdate AS VARCHAR(5),
+@IsDelete AS VARCHAR(5),
+@AllBranch AS VARCHAR(5),
+@AllReportBranch  AS VARCHAR(5)=NULL,
+@RankUpTo AS int,
+@AllPlans AS VARCHAR(5),
+@IsReprint AS VARCHAR(5),
+@PlanTableList AS VARCHAR(MAX),
+@DELM AS VARCHAR(5),
+@USERNAME as varchar(150),
+@UDATE as int,
+@UTIME as varchar(50),
+@USERBCODE as varchar(18)
+)
+AS
+BEGIN TRY
+BEGIN TRANSACTION
+	DECLARE @ISDONE AS INT
+	DECLARE @NOTE AS VARCHAR(200)
+	IF @InsertOrUpdate='INSERT'
+	BEGIN
+		INSERT INTO USER_TypeMaster
+		(UserType,Designation,IsBackDate,Extention,IsUpdate,IsDelete,AllBranch,RankUpTo,AllPlans,IsReprint,AllReportBranch)
+		VALUES
+		(@UserType,@Designation,@IsBackDate,@Extention,@IsUpdate,@IsDelete,@AllBranch,@RankUpTo,@AllPlans,@IsReprint,@AllReportBranch)
+	
+		
+	END
+	ELSE
+	BEGIN
+		UPDATE USER_TypeMaster SET 
+		Designation=@Designation,IsBackDate=@IsBackDate,Extention=@Extention,
+		IsUpdate=@IsUpdate,IsDelete=@IsDelete,AllBranch=@AllBranch,RankUpTo=@RankUpTo,
+		AllPlans=@AllPlans,IsReprint=@IsReprint,AllReportBranch=@AllReportBranch
+		WHERE UserType=@UserType
+		SET @NOTE='IsBackDate'+@IsBackDate+';Extention='+cast(@Extention as varchar(20))+';IsUpdate='+@IsUpdate+'
+		;IsDelete='+@IsDelete+';AllBranch='+@AllBranch+';AllReportBranch='+@AllReportBranch+'
+		;RankUpTo='+cast(@RankUpTo as varchar(50))+';AllPlans='+@AllPlans+';IsReprint='+@IsReprint
+
+	END
+
+	SET @ISDONE=0
+	SELECT @ISDONE
+COMMIT TRANSACTION
+END TRY
+
+BEGIN CATCH
+	SET @ISDONE=@@ERROR
+	SELECT @ISDONE
+	ROLLBACK TRANSACTION
+END CATCH
+GO
+/****** Object:  StoredProcedure [dbo].[USP_LoadAllMenuForUserType]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE proc [dbo].[USP_LoadAllMenuForUserType]
+(
+ @UserType as nvarchar(50)
+)
+AS
+
+select M.MenuID,M.MenuName,M.UpperCode,(case when (P.UserType is null) then 0 else 1 end) as IsAsign
+from tbl_menu as M left join WEB_MenuPermission as P on (M.MenuID = P.MenuID and P.UserType = @UserType)
+GO
+/****** Object:  StoredProcedure [dbo].[USP_MarksheetPrint]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[USP_MarksheetPrint]    
+(    
+ @StudentID VARCHAR(50)  
+)    
+AS    
+BEGIN    
+ select S.StudentID , S.Studentname, S.Gurdian,     
+ FORMAT(Convert(datetime, CAST(S.DOB AS VARCHAR), 103), 'dd/MM/yyyy') AS DOB,     
+ ST.Theory, ST.Practical, ST.MarksObtained, SU.Subject, C.Coursename,    
+ F.FranchaiseID, F.Center, (F.Landmark + ', ' + F.Address + ', ' + F.Location + ', ' + F.Pincode) AS Address,    
+ M.FullMarks, M.Passmarks, M.TotalMarksobtained, M.PercentageMarks    
+ FROM TBL_StudentMarks ST    
+ LEFT JOIN TBL_SubjectMaster SU ON ST.SubjectID = SU.SubjectID    
+ LEFT JOIN TBL_Student S ON S.StudentID = ST.StudentID    
+ LEFT JOIN TBL_CourseMaster C ON ST.CourseID = C.Programcode    
+ LEFT JOIN TBL_Franchaise F ON F.FranchaiseID = S.Franchaise    
+ LEFT JOIN (SELECT StudentID, CourseID, SUM(FullMarks) AS FullMarks, SUM(PassMarks) AS Passmarks, SUM(MarksObtained) AS TotalMarksobtained,     
+ ((SUM(MarksObtained) * 100) / SUM(FullMarks)) AS PercentageMarks FROM TBL_StudentMarks     
+ WHERE StudentID = @StudentID GROUP BY StudentID, CourseID) M ON M.CourseID = ST.CourseID AND M.StudentID = ST.StudentID    
+ WHERE ST.StudentID = @StudentID    
+END 
+GO
+/****** Object:  StoredProcedure [dbo].[USP_ResetExam]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[USP_ResetExam]
+(
+	@StudentID VARCHAR(50),
+	@ERRORCODE INT OUT
+)
+AS
+BEGIN TRY
+	BEGIN TRAN
+		DECLARE @Examdate AS INT
+		DECLARE @QSet AS VARCHAR(50)
+
+		SELECT @QSet = ConfigValue FROM TBL_Configuration WHERE ConfigField = 'Question Set';
+		SELECT @Examdate = ConfigValue FROM TBL_Configuration WHERE ConfigField = 'Exam date';
+
+		DELETE FROM TBL_ExamDetails WHERE StudentID = @StudentID AND QuestionSet = @QSet
+		AND Examdate = @Examdate
+
+		DELETE FROM TBL_StudentAnswer WHERE QuestionSet = @QSet AND 
+		StudentID = @StudentID AND cast(convert(char(8), Utimestamp, 112) as int) = @Examdate
+
+	COMMIT TRAN
+	SET @ERRORCODE = 0
+END TRY
+BEGIN CATCH
+	SET @ERRORCODE = @@ERROR
+	ROLLBACK TRAN
+END CATCH
+GO
+/****** Object:  StoredProcedure [dbo].[USP_SearchExamReport]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[USP_SearchExamReport]
+(
+	@Fromdate INT,
+	@Todate INT
+)
+AS
+BEGIN
+	SELECT S.StudentID, S.Studentname, E.QuestionSet, E.Starttime, E.EndTime, 
+	E.TotalQuestion, E.NoOfAttempt, E.NoOfPending, E.Marks, ISNULL(E.Discount,0) AS Discount FROM TBL_ExamDetails E
+	INNER JOIN TBL_Student S ON E.StudentID = S.StudentID
+	WHERE E.Examdate Between @Fromdate AND @Todate;
+END
+GO
+/****** Object:  StoredProcedure [dbo].[USP_StartExam]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[USP_StartExam]
+(
+	@StudentID VARCHAR(50),
+	@QSet VARCHAR(50)
+)
+AS
+BEGIN TRY
+	BEGIN TRAN
+		DECLARE @CheckExamAlreadyStart INT 
+		SELECT @CheckExamAlreadyStart = COUNT(*) FROM [TBL_StudentAnswer] WHERE StudentID = @StudentID AND QuestionSet = @QSet;		
+
+		IF @CheckExamAlreadyStart = 0
+		BEGIN
+			INSERT INTO [dbo].[TBL_StudentAnswer]([StudentID],[QuestionSet],[QuestionID],[AnsOption],[RightAns],[IsCompleted])
+			SELECT @StudentID, @QSet, QuestionID, '', RightAnswer, 0 FROM TBL_QuestionMaster WHERE QuestionSet = @QSet;
+		END
+		
+		SELECT Q.QuestionID, Q.QuestionSet, Q.Question, Q.Answer1, Q.Answer2, Q.Answer3, Q.Answer4, S.IsCompleted, Q.RightAnswer, S.AnsOption FROM TBL_StudentAnswer S 
+		INNER JOIN TBL_QuestionMaster Q ON S.QuestionID = Q.QuestionID
+		WHERE Q.QuestionSet = @QSet AND StudentID = @StudentID
+
+	COMMIT TRAN
+END TRY
+BEGIN CATCH
+	ROLLBACK TRAN
+END CATCH
+
+
+
+
+
+GO
+/****** Object:  StoredProcedure [dbo].[USP_StudentAnswered]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[USP_StudentAnswered]
+(
+	@StudentID VARCHAR(50),
+	@QuestionSet VARCHAR(50),
+	@QuestionID VARCHAR(50),
+	@AnsOption VARCHAR(50),
+	@ERRORCODE INT OUT
+)
+AS
+BEGIN TRY
+	BEGIN TRAN
+		DECLARE @ResultCount INT 
+
+		SELECT @ResultCount=COUNT(*) FROM [TBL_StudentAnswer] WHERE [StudentID] = @StudentID AND 
+		[QuestionSet] = @QuestionSet AND [QuestionID] = @QuestionID
+
+		IF @ResultCount = 0
+		BEGIN
+			INSERT INTO [TBL_StudentAnswer]([StudentID],[QuestionSet],[QuestionID],[AnsOption])
+			VALUES(@StudentID, @QuestionSet, @QuestionID, @AnsOption)
+		END
+		ELSE
+		BEGIN
+			UPDATE [dbo].[TBL_StudentAnswer]
+			SET [AnsOption] = @AnsOption,
+			IsCompleted = 1
+			WHERE [StudentID] = @StudentID AND [QuestionSet] = @QuestionSet AND [QuestionID] = @QuestionID
+		END
+	COMMIT TRAN
+	SET @ERRORCODE = 0
+END TRY
+BEGIN CATCH
+	SET @ERRORCODE = @@ERROR
+	ROLLBACK TRAN
+END CATCH
+GO
+/****** Object:  StoredProcedure [dbo].[USP_StudentIcardDetails]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[USP_StudentIcardDetails] (
+  @StudentID VARCHAR(50)
+)
+AS
+BEGIN
+  DECLARE @FranchiseID VARCHAR(50);
+
+  SELECT @FranchiseID = Franchaise
+  FROM TBL_Student
+  WHERE StudentID = @StudentID;
+
+  SELECT StudentID, Studentname, StudentPicture, StudentSignature,
+         FORMAT(CONVERT(datetime, CAST(DOB AS VARCHAR(50)), 104), 'dd.MM.yyyy') AS DOB,
+         FORMAT(CONVERT(datetime, CAST(JoiningDate AS VARCHAR(50)), 104), 'dd/MM/yyyy') AS JoiningDate,
+         FORMAT(CONVERT(datetime, CAST(Examdate AS VARCHAR(50)), 104), 'dd/MM/yyyy') AS Examdate, Course,
+         (SELECT Address FROM TBL_Franchaise WHERE FranchaiseID = @FranchiseID) AS FranchiseAddress
+  FROM TBL_Student
+  WHERE StudentID = @StudentID;
+END
+GO
+/****** Object:  StoredProcedure [dbo].[USP_UploadDocuments]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[USP_UploadDocuments]
+(
+	@StudentID VARCHAR(50),
+	@FranchaiseID VARCHAR(50),
+	@CourseID VARCHAR(50),
+	@Certificate VARCHAR(100),
+	@Marksheet VARCHAR(100),
+	@ERRORCODE INT OUT
+)
+AS
+BEGIN TRY
+	DECLARE @DocCount INT
+	SELECT @DocCount = COUNT(*) FROM TBL_Documents WHERE Student = @StudentID AND Franchaise = @FranchaiseID AND Course =  @CourseID;
+	IF @DocCount = 0
+	BEGIN
+		INSERT INTO [TBL_Documents]([Student],[Franchaise],[Course],[Certificate],[Marksheet])
+		VALUES(@StudentID, @FranchaiseID, @CourseID, @Certificate, @Marksheet)
+	END
+	ELSE
+	BEGIN
+		UPDATE [TBL_Documents] SET
+		[Certificate] = @Certificate,
+		[Marksheet] = @Marksheet
+		WHERE [Student] = @StudentID AND [Course] = @CourseID AND [Franchaise] = @FranchaiseID
+	END
+	SET @ERRORCODE = 0
+END TRY
+BEGIN CATCH
+	SET @ERRORCODE = @@ERROR
+	ROLLBACK TRAN
+END CATCH
+GO
+/****** Object:  StoredProcedure [dbo].[WEB_LoginStudent]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+
+CREATE PROCEDURE [dbo].[WEB_LoginStudent]
+	@StudentID AS VARCHAR(50)
+AS
+SET NOCOUNT ON;
+BEGIN
+	SET NOCOUNT ON;
+	SET TRANSACTION ISOLATION LEVEL  READ UNCOMMITTED ;
+	SELECT StudentID, Password, 'Student' AS UserType FROM TBL_Student WHERE StudentID = @StudentID		
+END
+GO
+/****** Object:  StoredProcedure [dbo].[WEB_LoginUserAdmin]    Script Date: 2/22/2024 16:20:29 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROCEDURE [dbo].[WEB_LoginUserAdmin]
+	@UserID AS VARCHAR(50)
+AS
+SET NOCOUNT ON;
+BEGIN
+	SET NOCOUNT ON;
+	SET TRANSACTION ISOLATION LEVEL  READ UNCOMMITTED ;
+	SELECT U.UserID,U.Password,U.UserType,T.Designation,ISNULL(U.LOCKMODE,0) AS LOCKMODE
+	FROM USER_Master AS U,USER_TypeMaster AS T WHERE U.UserType=T.UserType	
+	AND U.UserID=@UserID		
+END
+GO
+USE [master]
+GO
+ALTER DATABASE [SYS_ACCUFINTECH] SET  READ_WRITE 
+GO

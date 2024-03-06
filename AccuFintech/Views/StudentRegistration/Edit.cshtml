@@ -1,0 +1,280 @@
+﻿@model AccuFintech.Models.StudentModel
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@using (Html.BeginForm("Edit", "StudentRegistration", FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <h5 class="font-weight-bold">Add Student</h5>
+                <a href="/StudentRegistration/Index" class="btn btn-secondary btn-sm">Back</a>
+            </div>
+            <hr />
+            <div class="row">
+                @Html.HiddenFor(model=> model.StudentID)
+                <div class="col-md-9 col-12">
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Franchise</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.DropDownListFor(model => model.Franchaise, new SelectList(ViewBag.FranchaiseList, "Key", "Value"), "--Select Franchaise--", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Franchaise, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Course</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.DropDownListFor(model => model.Course, new SelectList(ViewBag.CourseList, "Key", "Value"), "--Select Course--", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Course, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Name</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Studentname, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                                    @Html.ValidationMessageFor(model => model.Studentname, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Gurdian</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Gurdian, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                                    @Html.ValidationMessageFor(model => model.Gurdian, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Husband</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Husband, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                                    @Html.ValidationMessageFor(model => model.Husband, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Phone</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                                    @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Joining date</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Joinindate, new { htmlAttributes = new { @class = "form-control form-control-sm", @Placeholder = "Joining date" } })
+                                    @Html.ValidationMessageFor(model => model.Joinindate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Alt. Phone</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.AltPhoneno, new { htmlAttributes = new { @class = "form-control form-control-sm", @Placeholder = "Alternate Phone" } })
+                                    @Html.ValidationMessageFor(model => model.AltPhoneno, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">DOB</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.DOB, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                                    @Html.ValidationMessageFor(model => model.DOB, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Age</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Age, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                                    @Html.ValidationMessageFor(model => model.Age, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Martial Status</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.DropDownListFor(model => model.MartialStatus, new SelectList(ViewBag.MartialStatusList), "--Select Status--", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.MartialStatus, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Aadhar</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Aadharno, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                                    @Html.ValidationMessageFor(model => model.Aadharno, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Gender</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.DropDownListFor(model => model.Gender, new SelectList(ViewBag.GenderList), "--Select Gender--", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Gender, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Qualification</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.DropDownListFor(model => model.AcademicQualification, new SelectList(ViewBag.AcademicQualifications), "--Select Qualification--", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.AcademicQualification, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Address</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.TextAreaFor(model => model.Address, new { @class = "form-control form-control-sm", @rows = "4" })
+                                    @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Pincode</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Pincode, new { htmlAttributes = new { @class = "form-control form-control-sm", @Placeholder = "Pincode" } })
+                                    @Html.ValidationMessageFor(model => model.Pincode, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">District</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.District, new { htmlAttributes = new { @class = "form-control form-control-sm", @Placeholder = "District" } })
+                                    @Html.ValidationMessageFor(model => model.District, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">State</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.State, new { htmlAttributes = new { @class = "form-control form-control-sm", @Placeholder = "State" } })
+                                    @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Password</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control form-control-sm", @Placeholder = "Password" } })
+                                    @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Religion</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Religion, new { htmlAttributes = new { @class = "form-control form-control-sm", @Placeholder = "Religion" } })
+                                    @Html.ValidationMessageFor(model => model.State, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Nationality</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.EditorFor(model => model.Nationality, new { htmlAttributes = new { @class = "form-control form-control-sm", @Placeholder = "Nationality" } })
+                                    @Html.ValidationMessageFor(model => model.Nationality, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Medium</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.DropDownListFor(model => model.Medium, new SelectList(ViewBag.MediumList), "--Select Medium--", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.Medium, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12">Physically Challange</label>
+                                <div class="col-md-8 col-sm-12">
+                                    @Html.DropDownListFor(model => model.IsPhysicallyChallanged, new SelectList(ViewBag.PhysicallychallangeList), "--Select--", new { @class = "form-control" })
+                                    @Html.ValidationMessageFor(model => model.IsPhysicallyChallanged, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 col-12">
+                    <div class="form-group p-3 mb-3 shadow-sm">
+                        @Html.Label("Profile", htmlAttributes: new { @class = "col-form-label", style = "font-size:0.75rem" })
+                        <div class="ImgPicDiv mb-2">
+                            <img src="@ViewBag.ProfilePicPath" id="ptbStudent" height="100" width="150" alt="Profile">
+                        </div>
+                        <input type="file" name="StuPicture" id="inpStudent" style="font-size:0.7rem;" accept="image/png, image/jpeg, image/jpg" />
+                        @Html.ValidationMessageFor(model => model.StuPicture, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group p-3 mb-3 shadow-sm">
+                        @Html.Label("ID Proof", htmlAttributes: new { @class = "col-form-label", style = "font-size:0.75rem" })
+                        <div class="ImgPicDiv mb-2">
+                            <img src="@ViewBag.IdProofPicPath" id="ptbIdProof" height="100" width="150" alt="ID Proof">
+                        </div>
+                        <input type="file" name="StuIDPicture" id="inpIdProof" style="font-size:0.7rem;" accept="image/png, image/jpeg, image/jpg" />
+                        @Html.ValidationMessageFor(model => model.StuIDPicture, "", new { @class = "text-danger" })
+                    </div>
+                    <div class="form-group p-1 mb-3 shadow-sm">
+                        @Html.Label("Signature" , htmlAttributes: new { @class = "col-form-label" , style = "font-size:0.75rem"})
+                        <div class="ImgPicDiv mb-2" style="height:50px">
+                            <img src="@ViewBag.SignProofPath" id="ptbsignProof" height="100" width="500" alt="Sign" />
+                        </div>
+                        <input type="file" name="StuSignPicture" id="intSignPic" style="font-size:0.7rem;"  accept="image/png , image/jpeg , image/jpg"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end">
+                <button class="btn btn-primary btn-sm">Confirm And Submit</button>
+            </div>
+        </div>
+    </div>
+
+}
+<script src="~/Scripts/ProjectScripts/Student/UpdateStudent.js"></script>

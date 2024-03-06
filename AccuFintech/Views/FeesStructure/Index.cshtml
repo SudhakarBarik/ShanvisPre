@@ -1,0 +1,142 @@
+﻿@model AccuFintech.Models.FeesStructureModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+
+}
+
+
+@if (TempData["Status"] != null)
+{
+    if (TempData["Status"].Equals("Ok"))
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> @TempData["Message"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Failed!</strong> @TempData["Message"]
+        </div>
+    }
+}
+
+
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h5 class="font-weight-bold">Fees Search</h5>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-5 col-12">
+                <div class="form-group row">
+                    <label class="col-form-label col-md-4 col-12">Franchaise</label>
+                    <div class="col-md-8 col-12">
+                        @Html.DropDownListFor(model => model.FranchaiseCode, new SelectList(ViewBag.Franchaise, "Key", "Value"), "--Select Franchaise--", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.FranchaiseCode, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5 col-12">
+                <div class="form-group row">
+                    <label class="col-form-label col-md-4 col-12">Student</label>
+                    <div class="col-md-8 col-12">
+                        @Html.DropDownListFor(model => model.Studentid, new SelectList(ViewBag.Studentlist, "Key", "Value"), "--Select Student--", new { @class = "form-control", id = "Studentdd" })
+                        @Html.ValidationMessageFor(model => model.Studentid, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-2 col-12">
+                <button type="button" id="btnSearchFees" class="btn btn-primary btn-sm">Search</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-2">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm w-100" id="TBL_FeesStructure">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>FCode</th>
+                        <th>Studentid</th>
+                        <th>Course</th>
+                        <th>Batch</th>
+                        <th>Total</th>
+                        <th>Paid</th>
+                        <th>Due</th>
+                        <th>LastPayDate</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="FessViewModal">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="refreshPage()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="card md-2">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between">
+                            <h5 class="font-weight-bold">Student Fees</h5>
+                        </div>
+                        <hr />
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm w-100" id="TBL_FeesStudentId">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>FranchaiseCode</th>
+                                        <th>Studentid</th>
+                                        <th>Batch</th>
+                                        <th>Course</th>
+                                        <th>TotalFees</th>
+                                        <th>PaidFees</th>
+                                        <th>PayDate</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="FeesStPayModal">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="refreshPage()">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    @Html.Partial("_FeesPay")
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+<script src="~/Scripts/ProjectScripts/FeesStructure/FeesStructure.js"></script>

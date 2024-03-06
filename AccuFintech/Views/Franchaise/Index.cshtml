@@ -1,0 +1,74 @@
+﻿@model AccuFintech.Models.FranchaiseModel
+
+@{
+    ViewBag.Title = "Franchaise Master";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@if (TempData["Status"] != null)
+{
+    if (TempData["Status"].Equals("Ok"))
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> @TempData["Message"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Failed!</strong> @TempData["Message"]
+        </div>
+    }
+}
+
+<div class="card">
+    <div class="card-header">
+        <h5 style="float:left">All Franchaise</h5>
+        <button type="button" id="btnCreate" class="btn btn-success btn-sm" data-toggle="modal" data-target="#franchaiseModal" style="float:right"><strong>+</strong> New Franchaise</button>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered w-100" id="franchaiselist">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Franchaise Code</th>
+                        <th>Franchaise Name</th>
+                        <th>Opening Date</th>
+                        <th>Franchaise Address</th>
+                        <th>Manager Name</th>
+                        <th>Prefix</th>
+                        <th>Mobile Number</th>
+                        <th>City</th>
+                        <th>State</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="franchaiseModal">
+    <div class="modal-dialog  modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle1">Add New Franchaise</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle2">Update Franchaise</h5>
+                <h5 class="modal-title" id="exampleModalLongTitle3">Delete Franchaise</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="refreshPage()">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @Html.Partial("_CreateFranchaise")
+            </div>
+        </div>
+    </div>
+</div>
+<script src="~/scripts/ProjectScripts/Master/FranchaiseMaster.js"></script>
+
+
+
+

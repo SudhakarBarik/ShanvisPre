@@ -1,0 +1,118 @@
+﻿@model AccuFintech.Models.SubjectModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (TempData["Status"] != null)
+{
+    if (TempData["Status"].Equals("Ok"))
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> @TempData["Message"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Failed!</strong> @TempData["Message"]
+        </div>
+    }
+}
+
+<style>
+    .Cursor-disable{
+        pointer-events:none;
+    }
+</style>
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="card">
+        <div class="card-body">
+            <h5 class="font-weight-bold">Subject Master</h5>
+            <hr/>
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12"> Course</label>
+                        <div class="col-md-8 col-12">
+                            @Html.DropDownListFor(model => model.CourseID, new SelectList(ViewBag.CourseList,"Key", "Value"), "--Select Course--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.CourseID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12"> Subject</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.Subject, new { htmlAttributes = new { @class = "form-control", @placeholder = "Subject" } })
+                            @Html.ValidationMessageFor(model => model.Subject, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12"> Full Marks</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.FullMarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Full Marks" } })
+                            @Html.ValidationMessageFor(model => model.FullMarks, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12"> Pass Marks</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.PassMarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Pass Marks" } })
+                            @Html.ValidationMessageFor(model => model.PassMarks, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12 col-12">
+                    @Html.HiddenFor(model=> model.SubjectString)
+                    <div class="d-flex justify-content-end">
+                        <button type="button" id="btnAddSubject" class="btn btn-primary btn-sm">Add Subject</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-2">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm w-100" id="TBL_SubjectList">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Course</th>
+                            <th>Subject</th>
+                            <th>Full Marks</th>
+                            <th>Pass Marks</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="Tbody_SubjectList">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end">
+                <button id="Confirm_Submit" class="btn btn-primary btn-sm">Confirm and Submit</button>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script src="~/Scripts/ProjectScripts/Master/SubjectMaster.js"></script>

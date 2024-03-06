@@ -1,0 +1,61 @@
+﻿@model AccuFintech.Models.UserTypeMaster
+
+@{
+    ViewBag.Title = "Create";
+}
+
+
+<div class="card bg-light">
+    <div class="card-header">
+        <h5 class="float-left">Create User Type</h5>
+        @Html.ActionLink("Back", "Index", "", new { @class = "btn btn-secondary btn-sm float-right" })
+    </div>
+    <div class="card-body bg-white">
+        @using (Html.BeginForm())
+            {
+            @Html.AntiForgeryToken()
+            <div class="row">
+
+                <div class="col-md-6 col-sm-12 shadow-sm p-3 mb-5 bg-white rounded">
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.UserType, htmlAttributes: new { @class = "col-form-label col-md-4 col-sm-12" })
+                        <div class="col-md-8 col-sm-12">
+                            @Html.EditorFor(model => model.UserType, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                            @Html.ValidationMessageFor(model => model.UserType, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        @Html.LabelFor(model => model.Designation, htmlAttributes: new { @class = "col-form-label col-md-4 col-sm-12" })
+                        <div class="col-md-8 ">
+                            @Html.EditorFor(model => model.Designation, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                            @Html.ValidationMessageFor(model => model.Designation, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-sm-12 shadow-sm p-3 mb-5 bg-white rounded">
+                    <div class="form-group">
+                        <div class="offset-md-4 col-md-8 col-sm-12">
+                            <div class="mb-2 d-inline-flex align-items-center w-100">
+                                @Html.CheckBoxFor(model => model.IsBackDate, new { id = "chkIsBackDate", Class = "toggle-switch" })
+                                <label class="form-check-label" for="chkIsBackDate">Back Date Permission </label>
+                            </div>
+                            <div class="mb-2 d-inline-flex align-items-center w-100">
+                                @Html.CheckBoxFor(model => model.IsUpdate, new { id = "chkIsUpdate", Class = "toggle-switch" })
+                                <label class="form-check-label" for="chkIsUpdate">Update Permission</label>
+                            </div>
+                            <div class="mb-2 d-inline-flex align-items-center w-100">
+                                @Html.CheckBoxFor(model => model.IsDelete, new { id = "chkIsDelete", Class = "toggle-switch" })
+                                <label class="form-check-label" for="chkIsDelete">Delete Permission</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" style="position:relative;margin-top:-36px;">
+                <input type="submit" id="btnSubmit" value="Create" class="btn btn-primary" style="float:right;" />
+            </div>
+        }
+    </div>
+</div>
+
+<script src="~/Scripts/ProjectScripts/Master/UserTypeMaster.js"></script>

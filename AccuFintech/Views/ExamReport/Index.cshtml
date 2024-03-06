@@ -1,0 +1,84 @@
+﻿@model AccuFintech.Models.ExamReportModel
+
+@{
+    ViewBag.Title = "Exam Report";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<style>
+    .dt-buttons {
+        visibility: hidden;
+    }
+</style>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="font-weight-bold">Exam Report</h5>
+            <hr />
+            <div class="row">
+                <div class="col-md-4 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12"> From date</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.Fromdate, new { htmlAttributes = new { @class = "form-control", @placeholder = "From date" } })
+                            @Html.ValidationMessageFor(model => model.Fromdate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12"> To date</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.Todate, new { htmlAttributes = new { @class = "form-control", @placeholder = "To date" } })
+                            @Html.ValidationMessageFor(model => model.Todate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 col-12">
+                    <button type="button" id="btnSearchExamReport" class="btn btn-primary btn-sm">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card mt-2">
+        <div class="card-body">
+            <div class="d-flex justify-content-end mb-2">
+                <div class="btn-group" role="group" aria-label="Basic example" id="ExamReportExportButtons" style="display:none;">
+                    <button type="button" class="btn btn-outline-danger btn-sm"
+                            onclick=$('.dt-button.buttons-pdf.buttons-html5').click()>
+                        PDF
+                    </button>
+                    <button type="button" class="btn btn-outline-success btn-sm"
+                            onclick=$('.dt-button.buttons-excel.buttons-html5').click()>
+                        Excel
+                    </button>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm w-100" id="TBL_ExamReportList">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Student ID</th>
+                            <th>Student Name</th>
+                            <th>Start time</th>
+                            <th>End time</th>
+                            <th>Total Question</th>
+                            <th>Attempted</th>
+                            <th>Pending</th>
+                            <th>Marks</th>
+                            <th>Discount</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script src="~/Scripts/ProjectScripts/Report/ExamReport.js"></script>

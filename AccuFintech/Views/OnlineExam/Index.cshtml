@@ -1,0 +1,357 @@
+﻿@model AccuFintech.Models.OnlineExamModel
+
+@{
+    Layout = null;
+}
+
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="icon" href="~/dist/img/AdminLTELogo.png" sizes="20x20" type="image/png">
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <!-- Font Awesome JS -->
+    <script defer src="~/Scripts/JS/solid.js"></script>
+    <script defer src="~/Scripts/JS/fontawesome.js"></script>
+    <script src="~/Scripts/JS/jquery_3.6.0.min.js"></script>
+    <link rel="stylesheet" href="~/Content/jquery-ui.css">
+    <script src="~/Scripts/JS/jquery-ui.js"></script>
+    <link href="~/Content/FullScreenStyle.css" rel="stylesheet" />
+    <script disable-devtool-auto src='~/scripts/Devtool/disable-devtool.js'></script>
+
+    <style>
+        .form-control-plaintext {
+            outline: none;
+        }
+
+        .ColorText {
+            color: red;
+        }
+
+        .TextDecoration {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        .Selectnone {
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+
+        <div class="card" id="StartExamScreen">
+            <div class="card-header">
+                <div class="col-md-12 col-12">
+                    <div class="d-flex justify-content-between">
+                        <a href="/StudentDashboard/Index" class="font-weight-bold"><span class="h5 font-weight-bold text-secondary"><</span> <span class="h5 text-primary">Online Exam</span></a>
+                        <button type="button" id="btnHideExam" style="display:none;"></button>
+                    </div>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="row text-left">
+                    <div class="col-md-3 col-12">
+
+                    </div>
+                    <div class="col-md-6 col-12">
+                        <div class="table-responsive">
+                            <table class="table table-bordered table-sm w-100" style="margin-top: 18vh;">
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th class="h4">Details</th>
+                                        <th class="h4">Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var item in Model.DiscountLists)
+                                    {
+                                        <tr>
+                                            <td><span class="h4">Between <span class="font-weight-bold text-primary">@item.MarksFrom%</span> - <span class="font-weight-bold text-primary">@item.MarksTo%</span></span></td>
+                                            <td class="font-weight-bold text-danger"><span class="h4">@item.FeesDiscount%</span></td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <span>Regn No.</span>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.StudentID, new { htmlAttributes = new { @class = "form-control-plaintext text-primary", @readonly = "readonly" } })
+                                </div>
+                            </div>
+
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <span>Student Name</span>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.Studentname, new { htmlAttributes = new { @class = "form-control-plaintext text-primary", @readonly = "readonly" } })
+                                </div>
+                            </div>
+
+                            <div class="row ">
+                                <div class="col-md-6">
+                                    <span>Exam Date</span>
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.EditorFor(model => model.StuExamdate, new { htmlAttributes = new { @class = "form-control-plaintext text-primary", @readonly = "readonly" } })
+                                </div>
+                            </div>
+
+                            <div class="row mb-4">
+                                <div class="col-md-6">
+                                    
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-primary btn-sm mt-4" onclick="CheckExamDate()">Start Exam</button>
+                                </div>
+                            </div>
+             
+
+                            
+                        </div>
+
+                        
+                    </div>
+                    <div class="col-md-3 col-12">
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        if (TempData["Status"] != null)
+        {
+            if (TempData["Status"].Equals("Ok"))
+            {
+                <div class="card mt-2">
+                    <div class="card-body text-center">
+                        <h4 class="font-weight-bold text-success">@TempData["Message"]</h4>
+                        <a href="/StudentDashboard/Index" class="btn btn-secondary">Back</a>
+                    </div>
+                </div>
+            }
+        }
+
+
+        <div class="container-fluid" id="ExamPortal" style="display:none;">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 col-12">
+                            @Html.HiddenFor(model => model.QuestionSet)
+                            @Html.HiddenFor(model => model.StuExamdate)
+                            @Html.HiddenFor(model => model.EStartTime)
+                            @Html.HiddenFor(model => model.EEndtime)
+                            <div class="form-group row Selectnone">
+                                <label class="col-form-label col-md-2 col-12">Regn no. : </label>
+                                <div class="col-md-10 col-12">
+                                    @Html.EditorFor(model => model.StudentID, new { htmlAttributes = new { @class = "form-control-plaintext text-primary", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                            <div class="form-group row Selectnone">
+                                <label class="col-form-label col-md-2 col-12">Name : </label>
+                                <div class="col-md-10 col-12">
+                                    @Html.EditorFor(model => model.Studentname, new { htmlAttributes = new { @class = "form-control-plaintext text-primary", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-12">
+                            <div class="row Selectnone">
+                                <div class="col-md-5 col-12"></div>
+                                <div class="col-md-3 col-12 text-right" style="background-color:azure;">
+                                    <div class="d-flex d-inline-flex">
+                                        <span class="font-weight-bold">No Of Attemts : </span> &nbsp;&nbsp;
+                                        <span id="NoOfAttempts" class="font-weight-bold text-success">0</span>
+                                    </div>
+                                    <br />
+                                    <div class="d-flex d-inline-flex">
+                                        <span class="font-weight-bold">No Of Review : </span> &nbsp;&nbsp;
+                                        <span id="NoOfReview" class="font-weight-bold text-info">0</span>
+                                    </div>
+                                    <br />
+                                    <div class="d-flex d-inline-flex">
+                                        <span class="font-weight-bold">Pending : </span> &nbsp;&nbsp;
+                                        <span id="PendingQuestion" class="font-weight-bold ColorText">0</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-12" style="background-color:aliceblue;">
+                                    @Html.HiddenFor(model => model.TotalSeconds)
+                                    <div class="text-center">
+                                        <h6 class="font-weight-bold">Time Remaining</h6>
+                                        <h4 class="font-weight-bold ColorText" id="TimeReamainingTimer"></h4>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-2 col-12">
+                    <div class="card" style="height:500px; overflow-y:scroll;">
+                        <div class="card-body">
+                            <div class="row" id="QuestionnoList">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-10 col-12">
+                    <div class="card" style="height:150px; overflow-y:scroll;">
+                        <div class="card-body">
+                            <input type="hidden" id="QuestionID" />
+                            <div class="row">
+                                <div class="col-md-12 col-12">
+                                    <div class="d-flex d-inline-flex">
+                                        <span id="qtnno">1</span>
+                                        <span> ) </span> &nbsp; &nbsp;
+                                        <span id="Question"></span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <div class="col-md-12 col-12">
+                                <div class="d-flex d-inline-flex">
+                                    <input type="radio" name="ans[]" id="ANS_A" value="A" />
+                                    &nbsp; &nbsp;
+                                    <span id="A1no">A</span>
+                                    <span> ) </span> &nbsp; &nbsp;
+                                    <span id="Answer1"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <div class="col-md-12 col-12">
+                                <div class="d-flex d-inline-flex">
+                                    <input type="radio" name="ans[]" id="ANS_B" value="B" />
+                                    &nbsp; &nbsp;
+                                    <span id="A2no">B</span>
+                                    <span> ) </span> &nbsp; &nbsp;
+                                    <span id="Answer2"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <div class="col-md-12 col-12">
+                                <div class="d-flex d-inline-flex">
+                                    <input type="radio" name="ans[]" id="ANS_C" value="C" />
+                                    &nbsp; &nbsp;
+                                    <span id="A3no">C</span>
+                                    <span> ) </span> &nbsp; &nbsp;
+                                    <span id="Answer3"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <div class="col-md-12 col-12">
+                                <div class="d-flex d-inline-flex">
+                                    <input type="radio" name="ans[]" id="ANS_D" value="D" />
+                                    &nbsp; &nbsp;
+                                    <span id="A4no">D</span>
+                                    <span> ) </span> &nbsp; &nbsp;
+                                    <span id="Answer4"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-2">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 col-12">
+                                    <div class="d-flex justify-content-end">
+                                        <button type="button" id="btnMarkAsDone" class="btn btn-primary btn-sm">Mark As Done</button>
+                                        <button type="button" id="btnMarkAsReview" class="btn btn-warning btn-sm ml-2">Mark As Review</button>
+                                        <button type="button" id="btnSubmitExam" class="btn btn-danger btn-sm ml-2">Submit</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal fade" id="OnlineExamResultModal" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Result</h5>
+                        @*<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>*@
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-6 col-12">No Of Total Question :  </label>
+                                <div class="col-md-6 col-12">
+                                    @Html.EditorFor(model => model.AETotalNoOfQuestions, new { htmlAttributes = new { @class = "form-control-plaintext text-primary", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-6 col-12">No Of Attempted Question :  </label>
+                                <div class="col-md-6 col-12">
+                                    @Html.EditorFor(model => model.AENoOfAttemptedQuestions, new { htmlAttributes = new { @class = "form-control-plaintext text-primary", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-6 col-12">No Of Reviewed Question :  </label>
+                                <div class="col-md-6 col-12">
+                                    @Html.EditorFor(model => model.AENoOfReviewedQuestions, new { htmlAttributes = new { @class = "form-control-plaintext text-primary", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-6 col-12">No Of Pending Question :  </label>
+                                <div class="col-md-6 col-12">
+                                    @Html.EditorFor(model => model.AENoOfPendingQuestions, new { htmlAttributes = new { @class = "form-control-plaintext text-primary", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-12 border border-primary rounded" style="display:none;">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-6 col-12 font-weight-bold">Marks Obtained :  </label>
+                                <div class="col-md-6 col-12">
+                                    @Html.EditorFor(model => model.AETotalMarks, new { htmlAttributes = new { @class = "form-control-plaintext text-success font-weight-bold", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary btn-sm" id="btnSubmitModalClose">Close</button>
+                        <button id="btnSubmitexam" class="btn btn-primary btn-sm">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    }
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="~/Scripts/ProjectScripts/Exam/OnlineExam.js"></script>
+</body>
+</html>
+

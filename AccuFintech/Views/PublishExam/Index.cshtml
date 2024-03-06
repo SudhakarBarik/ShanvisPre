@@ -1,0 +1,128 @@
+﻿@model AccuFintech.Models.PublishExamModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+
+
+@if (TempData["Status"] != null)
+{
+    if (TempData["Status"].Equals("Ok"))
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> @TempData["Message"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Failed!</strong> @TempData["Message"]
+        </div>
+    }
+}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-4 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="font-weight-bold">Publish Exam</h5>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-12 col-12">Question Set</label>
+                                <div class="col-md-12 col-12">
+                                    @Html.DropDownListFor(model => model.QuestionSet, new SelectList(ViewBag.QuestionsetList), "--Select Set--", new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-12 col-12">Exam Date</label>
+                                <div class="col-md-12 col-12">
+                                    @Html.EditorFor(model => model.Examdate, new { htmlAttributes = new { @class = "form-control" } })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mt-4">
+                        <div class="col-md-12 col-12">
+                            <div class="d-flex justify-content-end">
+                                <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-8 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-sm w-100">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th>Question Set</th>
+                                    <th>Exam date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.ConfigLists)
+                                {
+                                    <tr>
+                                        <td>@item.ConfigField</td>
+                                        <td>@item.ConfigValue</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+
+@using (Html.BeginForm("ResetExam", "PublishExam", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row mt-2">
+        <div class="col-md-4 col-12">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="font-weight-bold">Reset Exam</h5>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12 col-12">
+                            <div class="form-group row">
+                                <label class="col-form-label col-md-4 col-12"> Student ID</label>
+                                <div class="col-md-8 col-12">
+                                    @Html.EditorFor(model => model.StudentID, new { htmlAttributes = new { @class = "form-control", @placeholder = "Student ID" } })
+                                    @Html.ValidationMessageFor(model => model.StudentID, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-12 col-12">
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-danger btn-sm">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/ProjectScripts/Exam/PublishExam.js"></script>

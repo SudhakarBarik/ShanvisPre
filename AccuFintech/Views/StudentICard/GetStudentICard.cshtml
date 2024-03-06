@@ -1,0 +1,114 @@
+﻿@model AccuFintech.Models.StudentModel
+
+<style>
+    .fontSizeICardName {
+        font-size: 14px;
+    }
+
+    .fontSizeICardDetails {
+        font-size: 12px;
+    }
+
+    .backGroundImage {
+        background-image: url("/Content/ICard/Icard_bg_image.jpg");
+        background-color: #ffffff;
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: center center;
+        overflow-y: hidden;
+    }
+</style>
+
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+
+    <div class="StudentIcardPage">
+        <div class="solid p-2">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card backGroundImage" style="height: 400px; width:300px;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 col-12 text-center mt-5">
+                                    <h5 class="font-weight-bold">AccuFintech</h5>
+                                </div>
+                                <div class="col-md-12 col-12 text-center mt-1">
+                                    <img src="@ViewBag.StudentPics" class="border rounded-circle p-1" height="80" width="80" />
+                                </div>
+                            </div>
+
+
+                            <div class="col-md-12 col-12 text-center mt-1 fontSizeICardName">
+                                <span class="font-weight-bold">@Html.DisplayFor(model => model.Studentname)</span>
+                            </div>
+
+                            <div class="row mt-2">
+                                <div class="col-md-12 col-12">
+                                    <table class="table table-borderless table-sm w-100">
+                                        <tr>
+                                            <td>Employee ID : </td>
+                                            <td>@Html.DisplayFor(model => model.StudentID)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Joining Date : </td>
+                                            <td>@Html.DisplayFor(model => model.Joinindate)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Mobile : </td>
+                                            <td>@Html.DisplayFor(model => model.Phone)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Designation : </td>
+                                            <td>Student</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card backGroundImage" style="height: 400px; width:300px;">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-12 col-12 text-center mt-5">
+                                    <h5 class="font-weight-bold">AccuFintech</h5>
+                                </div>
+                            </div>
+
+                            <div class="row mt-5">
+                                <div class="table-responsive">
+                                    <table class="table table-borderless table-sm w-100">
+                                        <tr>
+                                            <td>Address : </td>
+                                            <td>@Html.DisplayFor(model => model.Address), @Html.DisplayFor(model => model.State), @Html.HiddenFor(model => model.Pincode)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Designation : </td>
+                                            <td>Student</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Age : </td>
+                                            <td>@Html.DisplayFor(model => model.Age)</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Phone : </td>
+                                            <td>@Html.DisplayFor(model => model.Phone)</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+}
+
+

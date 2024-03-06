@@ -1,0 +1,104 @@
+﻿@model AccuFintech.Models.UserMenu
+
+@{
+    ViewBag.Title = "Menu Permission";
+}
+
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+
+    <div class="row">
+        <div class="col-md-6 col-sm-12">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h6 class="float-left">User Type</h6>
+                </div>
+                <div class="card-body ">
+                    @Html.DropDownListFor(model => model.UserType, new SelectList(ViewBag.UserTypeList, "Key", "Value"), "--Select User Type--", new { @class = "form-control", @id = "ddlUserType" })
+                    <br />
+                    <input type="submit" id="btnSubmit" value="Allot Selected Menus" class="btn btn-primary btn-sm" style="float:right;" />
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <h6 class="float-left">Menu List</h6>
+                </div>
+                <div class="card-body">
+                    <div class="accordion" id="accordionExample">
+                        @for (var i = 0; i < Model.menuPermission.Count; i++)
+                        {
+                            if (Model.menuPermission[i].MenuParentID == 0)
+                            {
+                                var submenu = Model.menuPermission.Where(n => n.MenuParentID == Model.menuPermission[i].MenuID).ToList();
+                                var TotalSubMenuCount = submenu.Count.ToString();
+                                var TotalAsignMenuCount = submenu.Where(n => n.IsAsign == true).Count().ToString();
+
+                                if (submenu != null && submenu.Count > 0)
+                                {
+                                    <div>
+                                        <div class="bg-white pb-2" id="mainMenu_@Model.menuPermission[i].MenuName.Replace(" ",String.Empty)" style="border-bottom:1px solid #e5e5e5;">
+                                            <div class="row align-items-center">
+                                                <div class="col-2 mt-1">
+                                                    @Html.HiddenFor(model => Model.menuPermission[i].MenuID)
+                                                    @Html.HiddenFor(model => Model.menuPermission[i].MenuName)
+                                                    @Html.CheckBoxFor(model => Model.menuPermission[i].IsAsign, new { @class = "toggle-switch", id = "ChkParrent_" + Model.menuPermission[i].MenuName.Replace(" ", String.Empty) })
+                                                </div>
+                                                <div class="col-10">
+                                                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#subMenuID_@Model.menuPermission[i].MenuID" aria-expanded="false" aria-controls="subMenuID_@Model.menuPermission[i].MenuID">
+
+                                                        @if (TotalAsignMenuCount == "0")
+                                                        {
+                                                            @Model.menuPermission[i].MenuName
+                                                            <span class="badge badge-pill badge-light" style="float:right;">@TotalAsignMenuCount/@TotalSubMenuCount</span>
+                                                        }
+                                                        else if (TotalAsignMenuCount == TotalSubMenuCount)
+                                                        {
+                                                            @Model.menuPermission[i].MenuName
+                                                            <span class="badge badge-pill badge-success" style="float:right;">@TotalAsignMenuCount/@TotalSubMenuCount</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            @Model.menuPermission[i].MenuName
+                                                            <span class="badge badge-pill badge-info" style="float:right;">@TotalAsignMenuCount/@TotalSubMenuCount</span>
+                                                        }
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div id="subDiv_@Model.menuPermission[i].MenuName.Replace(" ",String.Empty)">
+                                            @*@for (var j = 0; j < submenu.Count; j++)*@
+                                            @foreach (var s in submenu)
+                                            {
+                                                int index = @Model.menuPermission.FindIndex(a => a.MenuID == s.MenuID);
+                                                <div id="subMenuID_@Model.menuPermission[i].MenuID" class="collapse" aria-labelledby="mainMenu_@Model.menuPermission[index].MenuName.Replace(" ",String.Empty)" data-parent="#accordionExample" style="padding-left:50px;">
+                                                    <div class="form-check">
+                                                        @Html.HiddenFor(model => model.menuPermission[index].MenuID)
+                                                        @Html.HiddenFor(model => model.menuPermission[index].MenuName)
+                                                        @Html.CheckBoxFor(model => model.menuPermission[index].IsAsign, new { @class = "toggle-switch", @id = "ChildMenuID_" + Model.menuPermission[index].MenuID, @alt = "ChkParrent_" + Model.menuPermission[i].MenuName.Replace(" ", String.Empty) })
+                                                        <label class="form-check-label" for="ChildMenuID_@Model.menuPermission[index].MenuID">@Model.menuPermission[index].MenuName </label>
+                                                    </div>
+                                                    @*<span style="padding-left:100px;">@s.MenuName</span>*@
+                                                </div>
+                                            }
+                                        </div>
+                                    </div>
+                                }
+                            }
+
+                        }
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<script src="~/Scripts/ProjectScripts/Master/MenuPermission.js"></script>

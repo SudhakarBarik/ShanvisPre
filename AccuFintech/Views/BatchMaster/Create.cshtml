@@ -1,0 +1,182 @@
+﻿@model AccuFintech.Models.BatchMaster
+
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (TempData["Status"] != null)
+{
+    if (TempData["Status"].Equals("Ok"))
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> @TempData["Message"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Failed!</strong> @TempData["Message"]
+        </div>
+    }
+}
+
+<style>
+    .Cursor-disable {
+        pointer-events: none;
+    }
+</style>
+
+@using (Html.BeginForm("Create", "BatchMaster", FormMethod.Post, new { id = "formId" }))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="card">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <h5 class="font-weight-bold">Batch Master</h5>
+                <a href="/BatchMaster/Index" class="btn btn-secondary btn-sm">Back</a>
+            </div>
+            <hr />
+            <div class="row">
+                <div class="col-md-5 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12"> Course</label>
+                        <div class="col-md-8 col-12">
+                            @Html.DropDownListFor(model => model.CourseID, new SelectList(ViewBag.CourseList, "Key", "Value"), "--Select Course--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.CourseID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12">Session</label>
+                        <div class="col-md-8 col-12">
+                            @Html.DropDownListFor(model => model.Session, new SelectList(ViewBag.SessionList, "Key", "Value"), "--Select Session--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Session, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-12">
+                    <div class="form-group row">
+                        <div class="d-flex justify-content-end">
+                            <input type='button' id="btnSession" value='Add Session' class="btn btn-success btn-sm" onclick='window.location = "@Url.Action("Index", "SessionYear")";' />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12">BatchName</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.BatchName, new { htmlAttributes = new { @class = "form-control", @placeholder = "BatchName" } })
+                            @Html.ValidationMessageFor(model => model.BatchName, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12">BatchID</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.BatchID, new { htmlAttributes = new { @class = "form-control", @placeholder = "BatchID" } })
+                            @Html.ValidationMessageFor(model => model.BatchID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-2 col-12">
+                    <div class="form-group row">
+                        <div class="d-flex justify-content-end">
+                            <span id="Status"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12">Start Date</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.BStartDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Select Date" } })
+                            @Html.ValidationMessageFor(model => model.BStartDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-5 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12">End Date</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.BEndDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Select Date", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.BEndDate, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-10 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-3 col-12">Set Class Frequncy</label>
+                        <div class="col-md-2 col-12">
+                            @Html.EditorFor(model => model.CountTimes, new { htmlAttributes = new { @class = "form-control" } })
+                            @Html.ValidationMessageFor(model => model.CountTimes, "", new { @class = "text-danger" })
+                        </div>
+                        <label class="col-form-label">Times</label>
+                        <div class="col-md-4 col-12">
+                            @Html.DropDownListFor(model => model.Mode, new SelectList(ViewBag.ModeList), "--Select Mode--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.Mode, "", new { @class = "text-danger" })
+                        </div>
+                        <label class="col-form-label">Mode</label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-5 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12">Frequncy</label>
+                        <div class="col-md-8 col-12">
+                            @Html.EditorFor(model => model.Frequncy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Frequncy", @readonly = "readonly" } })
+                            @Html.ValidationMessageFor(model => model.Frequncy, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @*<div class="row">
+                    <div class="col-md-12 col-12">
+                        <div class="d-flex justify-content-end">
+                            <button type="button" id="btnAddSubject" class="btn btn-primary btn-sm">Confirm</button>
+                        </div>
+                    </div>
+                </div>*@
+        </div>
+
+    </div>
+    @Html.HiddenFor(model => model.hiddenCheckedData)
+    <input type="hidden" id="hiddenCheckedData" name="CheckedDatesAndDays" value="">
+    <div class="card mt-2">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered table-sm w-100" id="TBL_BatchList">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Date</th>
+                            <th>Day</th>
+                            <th>CheckBox</th>
+                        </tr>
+                    </thead>
+                    <tbody id="Tbody_BatchList"></tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-end">
+                <button id="Confirm_Submit" class="btn btn-primary btn-sm">Confirm and Submit</button>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+<script src="~/Scripts/ProjectScripts/Master/BatchMaster.js"></script>

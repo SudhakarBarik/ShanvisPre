@@ -1,0 +1,43 @@
+﻿@model AccuFintech.Models.STUICardModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="font-weight-bold">ICard Print</h5>
+            @if (Convert.ToString(Session["_UserType"]).ToUpper() != "STUDENT")
+            {
+                <hr />
+                <div class="row">
+                    <div class="col-md-4 col-12">
+                        <div class="form-group row">
+                            <label class="col-form-label col-md-4 col-12">Student</label>
+                            <div class="col-md-8 col-sm-12">
+                                @Html.DropDownListFor(model => model.StudentID, new SelectList(ViewBag.StudentList, "Key", "Value"), "--Select Student--", new { @class = "form-control" })
+                                @Html.ValidationMessageFor(model => model.StudentID, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-12">
+                        <button type="button" id="btnICardSearch" class="btn btn-primary btn-sm">Search</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <div class="card mt-2" id="PrintIcard">
+        <div class="card-body" id="PrintICardReport">
+
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/ProjectScripts/Print/ICardPrint.js"></script>

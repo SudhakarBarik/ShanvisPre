@@ -1,0 +1,75 @@
+﻿@model AccuFintech.Models.StudentModel
+
+@{
+    ViewBag.Title = "Student List";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@if (TempData["Status"] != null)
+{
+    if (TempData["Status"].Equals("Ok"))
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> @TempData["Message"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Failed!</strong> @TempData["Message"]
+        </div>
+    }
+}
+
+
+<script>
+    var _SessionUserType = '@Session["_userType"].ToString().ToUpper()';
+</script>
+
+<div class="card">
+    <div class="card-body">
+        <div class="d-flex justify-content-between">
+            <h5 class="font-weight-bold">Student Search</h5>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="col-md-6 col-12">
+                <div class="form-group row">
+                    <label class="col-form-label col-md-4 col-12">Course</label>
+                    <div class="col-md-8 col-sm-12">
+                        @Html.DropDownListFor(model => model.CourseID, new SelectList(ViewBag.CourseList, "Key", "Value"), "--Select Course--", new { @class = "form-control" })
+                        @Html.ValidationMessageFor(model => model.CourseID, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mt-2">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-bordered table-sm w-100" id="TBL_StudentList">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Joining Date</th>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Gurdian</th>
+                        <th>Phone</th>
+                        <th>Course</th>
+                        <th>Reg. Date</th>
+                        <th>Exam date</th>
+                        <th>Franchaise</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="~/Scripts/ProjectScripts/Student/StudentList.js"></script>

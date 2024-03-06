@@ -1,0 +1,70 @@
+﻿@model IEnumerable<AccuFintech.Models.UserTypeMaster>
+
+@{
+    ViewBag.Title = "UserType Master";
+}
+
+
+@if (TempData["Status"] != null)
+{
+    if (TempData["Status"].Equals("Ok"))
+    {
+        <div class="alert alert-success" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Success!</strong> @TempData["Message"]
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-danger" role="alert">
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <strong>Failed!</strong> @TempData["Message"]
+        </div>
+    }
+}
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 ">
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="float-left">User Type List</h5>
+                    @Html.ActionLink("Create New", "Create", "UserTypeMaster", new { Area = "Admin" }, new { @class = "btn btn-info btn-sm float-right" })
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped w-100">
+                            <thead>
+                                <tr>
+                                    <th style="font-size: smaller;">User Type</th>
+                                    <th style="font-size: smaller;">Desig.</th>
+                                    <th style="font-size: smaller;">Back Date</th>
+                                    <th style="font-size: smaller;">Update</th>
+                                    <th style="font-size: smaller;">Delete</th>
+                                    <th style="font-size: smaller;">Edit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@Html.DisplayFor(modelItem => item.UserType)</td>
+                                        <td>@Html.DisplayFor(modelItem => item.Designation)</td>
+                                        <td>@(item.IsBackDate != true ? "❌" : "✔")</td>
+                                        <td>@( item.IsUpdate != true ? "❌" : "✔")</td>
+                                        <td>@(item.IsDelete != true ? "❌" : "✔")</td>
+                                        <td>
+                                            <a href="/UserTypeMaster/Edit?id=@item.UserType" style="color:green;"> <i class="fas fa-edit"> </i></a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

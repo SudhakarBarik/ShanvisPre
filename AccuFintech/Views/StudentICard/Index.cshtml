@@ -1,0 +1,40 @@
+﻿@model AccuFintech.Models.StudentICardModel
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+    
+    <div class="card" id="IdCardNotPrint">
+        <div class="card-body">
+            <h5 class="font-weight-bold">Student ICard</h5>
+            <hr/>
+            <div class="row">
+                <div class="col-md-6 col-12">
+                    <div class="form-group row">
+                        <label class="col-form-label col-md-4 col-12"> Student</label>
+                        <div class="col-md-8 col-12">
+                            @Html.DropDownListFor(model => model.StudentID, new SelectList(ViewBag.StudentList, "Key", "Value"), "--Select Student--", new { @class = "form-control" })
+                            @Html.ValidationMessageFor(model => model.StudentID, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-12">
+                    <button type="button" id="btnPrintICard" class="btn btn-success btn-sm">Print Icard</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mt-2">
+        <div class="card-body" id="StudentICard">
+            
+        </div>
+    </div>
+}
+
+<script src="~/Scripts/ProjectScripts/Student/StudentICard.js"></script>
